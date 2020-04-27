@@ -40,6 +40,37 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: ServerCard());
+        body: Column(
+          children: <Widget>[
+            ServerCard(
+              name: "My mc Server",
+              players: "10/5",
+              isRunning: true,
+              ram: 50,
+              cpu: 10,
+              infoBoard: [
+                "Started at: 2020.01.21-12:58",
+                "Autostart is disabled",
+                "Sever type: Spigon 1.15.0",
+                "Description: Hello World"
+              ],
+              background: AssetImage("images/backgroundSample.png"),
+            ),
+            ServerCard(
+              name: "Another server",
+              players: "0/0",
+              isRunning: false,
+              ram: 0,
+              cpu: 0,
+              infoBoard: [
+                "Started at: 2020.01.21-12:58",
+                "Autostart is disabled",
+                "Sever type: Spigon 1.10.0",
+                "Description: wííííííííííí"
+              ],
+              background: AssetImage("images/background2.jpg"),
+            )
+          ],
+        ));
   }
 }

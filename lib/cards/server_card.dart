@@ -2,36 +2,41 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ServerCard extends StatelessWidget {
-  String name, type, motd, started, autoStart, players;
+  String name, players, startedAt;
   int ram, cpu;
+  bool isRunning;
+  final List<String> infoBoard;
+  final ImageProvider background;
   final TextStyle textStyle = new TextStyle(
     color: Colors.white,
     fontSize: 20,
   );
-  final TextStyle sTextStyle = new TextStyle(color: Colors.white, fontSize: 15);
+  final TextStyle sTextStyle = new TextStyle(color: Colors.white, fontSize: 16);
 
   ServerCard(
       {Key key,
       this.name,
-      this.type,
-      this.motd,
-      this.started,
-      this.autoStart,
+        this.isRunning,
       this.ram,
       this.cpu,
-      this.players})
+        this.players,
+        this.startedAt, this.infoBoard, this.background
+      })
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     name = name ?? "Name is empty";
-    type = name ?? "empty";
-    motd = motd ?? "empty";
-    started = started ?? "Started: empty";
-    autoStart = autoStart ?? "unknow";
+    startedAt = startedAt ?? "00:00:00";
+    isRunning = isRunning ?? false;
     players = players ?? "0/0";
     ram = ram ?? 0;
     cpu = cpu ?? 0;
+
+    List<Widget> _infoList = new List();
+    for (var x in infoBoard ?? []) {
+      _infoList.add(Text(x, style: sTextStyle,));
+    }
 
     return Container(
       padding: EdgeInsets.all(5),
@@ -43,17 +48,18 @@ class ServerCard extends StatelessWidget {
             blurRadius: 10.0,
           ),
         ],
-        border: Border.all(color: true ? Colors.green : Colors.red, width: 4),
+        border: Border.all(
+            color: isRunning ? Colors.green : Colors.red, width: 4),
         borderRadius: BorderRadius.all(Radius.circular(23)),
         image: DecorationImage(
-            image: AssetImage("images/backgroundSample.png"),
+            image: background,
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
                 Colors.black.withOpacity(0.4), BlendMode.darken)),
       ),
       margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _DesignContainer(
@@ -80,24 +86,7 @@ class ServerCard extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      started,
-                      style: sTextStyle,
-                    ),
-                    Text(
-                      motd,
-                      style: sTextStyle,
-                    ),
-                    Text(
-                      type,
-                      style: sTextStyle,
-                    ),
-                    Text(
-                      autoStart,
-                      style: sTextStyle,
-                    ),
-                  ],
+                  children: _infoList,
                 ),
               ),
               Column(
