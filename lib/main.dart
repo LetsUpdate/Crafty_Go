@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'CraftyAPI/craftyAPI.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -26,7 +28,8 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
+  CraftyClient client = new CraftyClient(
+      "DOM5VF7D3JHLXUOBPUR3N9UQO5FLXKPJ", "192.168.0.2:8000");
   final String title;
 
   @override
@@ -40,6 +43,9 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          widget.client.getServerList();
+        },),
         body: Column(
           children: <Widget>[
             ServerCard(

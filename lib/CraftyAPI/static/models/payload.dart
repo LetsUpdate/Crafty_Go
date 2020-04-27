@@ -11,9 +11,9 @@ String craftyResponseToJson(CraftyResponse data) => json.encode(data.toJson());
 
 class CraftyResponse {
   final int status;
-  final Data data;
-  final Data errors;
-  final Data messages;
+  final String data;
+  final String errors;
+  final String messages;
 
   const CraftyResponse({
     this.status,
@@ -24,23 +24,16 @@ class CraftyResponse {
 
   factory CraftyResponse.fromJson(Map<String, dynamic> json) => CraftyResponse(
         status: json["status"],
-        data: Data.fromJson(json["data"]),
-        errors: Data.fromJson(json["errors"]),
-        messages: Data.fromJson(json["messages"]),
+    data: json["data"],
+    errors: json["errors"],
+    messages: json["messages"],
       );
 
   Map<String, dynamic> toJson() => {
         "status": status,
-        "data": data.toJson(),
-        "errors": errors.toJson(),
-        "messages": messages.toJson(),
+    "data": data,
+    "errors": errors,
+    "messages": messages,
       };
 }
 
-class Data {
-  Data();
-
-  factory Data.fromJson(Map<String, dynamic> json) => Data();
-
-  Map<String, dynamic> toJson() => {};
-}
