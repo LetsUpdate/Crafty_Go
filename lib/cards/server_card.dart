@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ServerCard extends StatelessWidget {
-  String name, players, startedAt;
-  int ram, cpu;
-  bool isRunning;
+  final String name, players, startedAt;
+  final int ram, cpu;
+  final bool isRunning;
   final List<String> infoBoard;
   final ImageProvider background;
   final TextStyle textStyle = new TextStyle(
@@ -15,27 +15,26 @@ class ServerCard extends StatelessWidget {
 
   ServerCard(
       {Key key,
-      this.name,
-        this.isRunning,
-      this.ram,
-      this.cpu,
-        this.players,
-        this.startedAt, this.infoBoard, this.background
-      })
+        this.name = "SampleName",
+        this.isRunning = false,
+        this.ram = 0,
+        this.cpu = 0,
+        this.players = "0/0",
+        this.startedAt = "00:00:00",
+        this.infoBoard = const [],
+        this.background})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    name = name ?? "Name is empty";
-    startedAt = startedAt ?? "00:00:00";
-    isRunning = isRunning ?? false;
-    players = players ?? "0/0";
-    ram = ram ?? 0;
-    cpu = cpu ?? 0;
+
 
     List<Widget> _infoList = new List();
     for (var x in infoBoard ?? []) {
-      _infoList.add(Text(x, style: sTextStyle,));
+      _infoList.add(Text(
+        x,
+        style: sTextStyle,
+      ));
     }
 
     return Container(
@@ -48,8 +47,8 @@ class ServerCard extends StatelessWidget {
             blurRadius: 10.0,
           ),
         ],
-        border: Border.all(
-            color: isRunning ? Colors.green : Colors.red, width: 4),
+        border:
+        Border.all(color: isRunning ? Colors.green : Colors.red, width: 4),
         borderRadius: BorderRadius.all(Radius.circular(23)),
         image: DecorationImage(
             image: background,
