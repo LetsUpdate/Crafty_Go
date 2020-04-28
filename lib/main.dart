@@ -1,3 +1,4 @@
+import 'package:craftycontroller/CraftyAPI/static/models/server.dart';
 import 'package:craftycontroller/cards/server_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   CraftyClient client = new CraftyClient(
-      "DOM5VF7D3JHLXUOBPUR3N9UQO5FLXKPJ", "192.168.0.2:8000");
+      "DOM5VF7D3JHLXUOBPUR3N9UQO5FLXKPJ", "192.168.0.234:8000");
   final String title;
 
   @override
@@ -37,6 +38,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  List<Stat> _serverStats = [];
+
+  void updateServerStats() async {
+    _serverStats = (await widget.client.getServerStats()).data;
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    updateServerStats();
+  }
+
+  Widget serverCardBuilder(BuildContext ctxt, int index) {
+    Stat stat = _serverStats[index];
+    return new ServerCard(
+      name: stat.name,
+      players: "${stat.onlinePlayers}/${stat.maxPlayers}",
+      isRunning: stat.serverRunning,
+      ram: stat.memoryUsage,
+      cpu: stat.cpuUsage,
+      infoBoard: [
+        "Started at: ${stat.serverStartTime}",
+        "Autostart is ${stat.serverRunning}",
+        "Sever type: ${stat.serverVersion}",
+        "Description: ${stat.motd}"
+      ],
+      background: AssetImage("images/backgroundSample.png"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,39 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
         ),
         floatingActionButton: FloatingActionButton(onPressed: () {
-          widget.client.getServerList();
+          updateServerStats();
         },),
-        body: Column(
-          children: <Widget>[
-            ServerCard(
-              name: "My mc Server",
-              players: "10/5",
-              isRunning: true,
-              ram: 50,
-              cpu: 10,
-              infoBoard: [
-                "Started at: 2020.01.21-12:58",
-                "Autostart is disabled",
-                "Sever type: Spigon 1.15.0",
-                "Description: Hello World"
-              ],
-              background: AssetImage("images/backgroundSample.png"),
-            ),
-            ServerCard(
-              name: "Another server",
-              players: "0/0",
-              isRunning: false,
-              ram: 0,
-              cpu: 0,
-              infoBoard: [
-                "Started at: 2020.01.21-12:58",
-                "Autostart is disabled",
-                "Sever type: Spigon 1.10.0",
-                "Description: wííííííííííí"
-              ],
-              background: AssetImage("images/background2.jpg"),
-            )
-          ],
-        ));
+        body:
+        ListView.builder(
+          itemBuilder: serverCardBuilder, itemCount: _serverStats.length,)
+    );
   }
 }

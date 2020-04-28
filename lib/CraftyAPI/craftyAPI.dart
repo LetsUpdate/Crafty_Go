@@ -1,12 +1,9 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
+import 'package:craftycontroller/CraftyAPI/static/models/server.dart';
 import 'package:craftycontroller/CraftyAPI/static/routes.dart' as routes;
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
-
-import 'static/models/payload.dart';
 
 class CraftyClient {
   final String API_TOKEN;
@@ -21,7 +18,6 @@ class CraftyClient {
   }
 
 
-
   Future<String> _makeGetRequest(
       String apiRoute, Map<String, String> params) async {
     if (params == null) params = Map();
@@ -29,7 +25,7 @@ class CraftyClient {
     var uri = Uri.https(URL, apiRoute, params);
     IOClient ioClient = new IOClient(httpClient);
     http.Response response= await ioClient.get(uri);
-
+    //log(response.body);
     return response.body;
   }
 
@@ -40,15 +36,14 @@ class CraftyClient {
     var uri = Uri.https(URL, apiRoute, params);
     IOClient ioClient = new IOClient(httpClient);
     http.Response response= await ioClient.post(uri,body: body);
-    // todo Close the connection idk when
+    // todo Close the connection idk when 
     return response.body;
   }
 
-  Future<String> getServerList() async {
+  Future<ServerStat> getServerStats() async {
     String response =
-        await _makeGetRequest(routes.MCAPIRoutes.LIST, null);
-    final serverList = serverListFromJson(response);
-    serverList.data.servers.forEach((f){log(f.id.toString());});
-    return null;
+    await _makeGetRequest(routes.CraftyAPIRoutes.SERVER_STATS, null);
+    return serverStatFromJson(response);
   }
+
 }

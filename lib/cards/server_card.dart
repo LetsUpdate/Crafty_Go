@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class ServerCard extends StatelessWidget {
   final String name, players, startedAt;
-  final int ram, cpu;
+  final String ram;
+  final double cpu;
   final bool isRunning;
   final List<String> infoBoard;
   final ImageProvider background;
@@ -17,7 +18,7 @@ class ServerCard extends StatelessWidget {
       {Key key,
         this.name = "SampleName",
         this.isRunning = false,
-        this.ram = 0,
+        this.ram = "0",
         this.cpu = 0,
         this.players = "0/0",
         this.startedAt = "00:00:00",
@@ -92,7 +93,7 @@ class ServerCard extends StatelessWidget {
                 children: <Widget>[
                   _IconAndText(
                     icon: Icons.apps,
-                    text: ram.toString() + "%",
+                    text: ram,
                     backgroundColor: Colors.deepPurpleAccent.withOpacity(0.5),
                     textStyle: sTextStyle,
                   ),

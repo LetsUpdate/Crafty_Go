@@ -1,99 +1,128 @@
 // To parse this JSON data, do
 //
-//     final serverList = serverListFromJson(jsonString);
+//     final serverStat = serverStatFromJson(jsonString);
 
 import 'dart:convert';
 
-ServerList serverListFromJson(String str) =>
-    ServerList.fromJson(json.decode(str));
+ServerStat serverStatFromJson(String str) =>
+    ServerStat.fromJson(json.decode(str));
 
-String serverListToJson(ServerList data) => json.encode(data.toJson());
+String serverStatToJson(ServerStat data) => json.encode(data.toJson());
 
-class ServerList {
+class ServerStat {
   final int status;
-  final Data data;
+  final List<Stat> data;
   final Errors errors;
   final Errors messages;
 
-  ServerList({
+  ServerStat({
     this.status,
     this.data,
     this.errors,
     this.messages,
   });
 
-  factory ServerList.fromJson(Map<String, dynamic> json) => ServerList(
+  factory ServerStat.fromJson(Map<String, dynamic> json) =>
+      ServerStat(
         status: json["status"],
-        data: Data.fromJson(json["data"]),
+        data: List<Stat>.from(json["data"].map((x) => Stat.fromJson(x))),
         errors: Errors.fromJson(json["errors"]),
         messages: Errors.fromJson(json["messages"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "status": status,
-        "data": data.toJson(),
-        "errors": errors.toJson(),
-        "messages": messages.toJson(),
-      };
+    "status": status,
+    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "errors": errors.toJson(),
+    "messages": messages.toJson(),
+  };
 }
 
-class Data {
-  final String code;
-  final List<Server> servers;
-
-  Data({
-    this.code,
-    this.servers,
-  });
-
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        code: json["code"],
-        servers:
-            List<Server>.from(json["servers"].map((x) => Server.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "code": code,
-        "servers": List<dynamic>.from(servers.map((x) => x.toJson())),
-      };
-}
-
-class Server {
+class Stat {
   final int id;
+  final int serverId;
+  final String serverStartTime;
+  final double cpuUsage;
+  final String memoryUsage;
+  final int maxPlayers;
+  final int onlinePlayers;
+  final String players;
+  final String motd;
+  final bool serverRunning;
+  final String serverVersion;
+  final String worldName;
+  final String worldSize;
+  final String serverIp;
+  final int serverPort;
   final String name;
-  final bool running;
-  final bool crashed;
-  final bool autoStart;
 
-  Server({
+  Stat({
     this.id,
+    this.serverId,
+    this.serverStartTime,
+    this.cpuUsage,
+    this.memoryUsage,
+    this.maxPlayers,
+    this.onlinePlayers,
+    this.players,
+    this.motd,
+    this.serverRunning,
+    this.serverVersion,
+    this.worldName,
+    this.worldSize,
+    this.serverIp,
+    this.serverPort,
     this.name,
-    this.running,
-    this.crashed,
-    this.autoStart,
   });
 
-  factory Server.fromJson(Map<String, dynamic> json) => Server(
+  factory Stat.fromJson(Map<String, dynamic> json) =>
+      Stat(
         id: json["id"],
+        serverId: json["server_id"],
+        serverStartTime: json["server_start_time"],
+        cpuUsage: json["cpu_usage"].toDouble(),
+        memoryUsage: json["memory_usage"],
+        maxPlayers: json["max_players"],
+        onlinePlayers: json["online_players"],
+        players: json["players"],
+        motd: json["motd"],
+        serverRunning: json["server_running"],
+        serverVersion: json["server_version"],
+        worldName: json["world_name"],
+        worldSize: json["world_size"],
+        serverIp: json["server_ip"],
+        serverPort: json["server_port"],
         name: json["name"],
-        running: json["running"],
-        crashed: json["crashed"],
-        autoStart: json["auto_start"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "running": running,
-        "crashed": crashed,
-        "auto_start": autoStart,
-      };
+    "id": id,
+    "server_id": serverId,
+    "server_start_time": serverStartTime,
+    "cpu_usage": cpuUsage,
+    "memory_usage": memoryUsage,
+    "max_players": maxPlayers,
+    "online_players": onlinePlayers,
+    "players": players,
+    "motd": motd,
+    "server_running": serverRunning,
+    "server_version": serverVersion,
+    "world_name": worldName,
+    "world_size": worldSize,
+    "server_ip": serverIp,
+    "server_port": serverPort,
+    "name": name,
+  };
 }
 
 class Errors {
   Errors();
 
-  factory Errors.fromJson(Map<String, dynamic> json) => Errors();
+  factory Errors.fromJson(Map<String, dynamic> json) =>
+      Errors(
+      );
 
-  Map<String, dynamic> toJson() => {};
+  Map<String, dynamic> toJson() =>
+      {
+      };
 }
