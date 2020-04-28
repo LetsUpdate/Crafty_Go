@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:craftycontroller/CraftyAPI/static/models/server.dart';
+import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
 import 'package:craftycontroller/cards/server_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
