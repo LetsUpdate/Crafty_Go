@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:craftycontroller/CraftyAPI/static/models/server.dart';
 import 'package:craftycontroller/cards/server_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'CraftyAPI/craftyAPI.dart';
 
@@ -38,21 +41,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   List<Stat> _serverStats = [];
-
-  void updateServerStats() async {
-    _serverStats = (await widget.client.getServerStats()).data;
-    setState(() {
-
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    updateServerStats();
+
+    Timer.periodic(Duration(seconds: 10), (Timer t) {
+      _updateServerStats();
+    });
   }
+
+  void _updateServerStats() async {
+    _serverStats = (await widget.client.getServerStats()).data;
+    _refreshController.refreshCompleted();
+    setState(() {});
+  }
+
+  //region refresh
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
+
+  //endregion
 
   Widget serverCardBuilder(BuildContext ctxt, int index) {
     Stat stat = _serverStats[index];
@@ -78,12 +88,14 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          updateServerStats();
-        },),
-        body:
-        ListView.builder(
-          itemBuilder: serverCardBuilder, itemCount: _serverStats.length,)
-    );
+        body: SmartRefresher(
+          controller: _refreshController,
+          onRefresh: _updateServerStats,
+          header: WaterDropMaterialHeader(distance: 35),
+          child: ListView.builder(
+            itemBuilder: serverCardBuilder,
+            itemCount: _serverStats.length,
+          ),
+        ));
   }
 }
