@@ -1,43 +1,54 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:craftycontroller/CraftyAPI/static/routes.dart' as routes;
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 import 'static/models/payload.dart';
 
 class CraftyClient {
   final String API_TOKEN;
   final String URL;
+  final HttpClient httpClient = new HttpClient();
 
   CraftyClient(this.API_TOKEN, this.URL) {
-    // anwser to certificate: https://stackoverflow.com/questions/54285172/how-to-solve-flutter-certificate-verify-failed-error-while-performing-a-post-req
+    // anwser to certificate: https://stackoverflow.com/questions/49839729/how-to-post-data-to-https-server-in-dart
+    bool trustSelfSigned = true;
+    httpClient.badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => trustSelfSigned);
   }
 
 
-  CraftyResponse _unpackResponse(http.Response response) {
-    return craftyResponseFromJson(response.body);
-  }
 
-  Future<CraftyResponse> _makeGetRequest(String apiRoute,
-      Map<String, String> params) async {
+  Future<String> _makeGetRequest(
+      String apiRoute, Map<String, String> params) async {
     if (params == null) params = Map();
     params.addAll({"token": API_TOKEN});
     var uri = Uri.https(URL, apiRoute, params);
-    return _unpackResponse(await http.get(uri));
+    IOClient ioClient = new IOClient(httpClient);
+    http.Response response= await ioClient.get(uri);
+
+    return response.body;
   }
 
-  Future<CraftyResponse> _makePostRequest(String apiRoute,
-      Map<String, String> params, String body) async {
+  Future<String> _makePostRequest(
+      String apiRoute, Map<String, String> params, String body) async {
     if (params == null) params = Map();
     params.addAll({"token": API_TOKEN});
     var uri = Uri.https(URL, apiRoute, params);
-    return _unpackResponse(await http.post(uri, body: body));
+    IOClient ioClient = new IOClient(httpClient);
+    http.Response response= await ioClient.post(uri,body: body);
+    // todo Close the connection idk when
+    return response.body;
   }
 
   Future<String> getServerList() async {
-    CraftyResponse response =
-    await _makeGetRequest(routes.MCAPIRoutes.LIST, null);
-    log(response.data);
-    return response.data;
+    String response =
+        await _makeGetRequest(routes.MCAPIRoutes.LIST, null);
+    final serverList = serverListFromJson(response);
+    serverList.data.servers.forEach((f){log(f.id.toString());});
+    return null;
   }
 }
