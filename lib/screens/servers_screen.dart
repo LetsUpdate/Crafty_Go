@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
 import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
+import 'package:craftycontroller/cards/host_card.dart';
 import 'package:craftycontroller/cards/server_card.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -18,6 +19,7 @@ class ServersScreen extends StatefulWidget {
 
 class _ServersScreenState extends State<ServersScreen> {
   List<Stat> _serverStats = [];
+  HostStatData _hostStats = new HostStatData();
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _ServersScreenState extends State<ServersScreen> {
 
   void _updateServerStats() async {
     _serverStats = (await widget.client.getServerStats()).data;
+    _hostStats = (await widget.client.getHostStats()).data;
     _refreshController.refreshCompleted();
     setState(() {});
   }
@@ -61,17 +64,40 @@ class _ServersScreenState extends State<ServersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: SmartRefresher(
-        controller: _refreshController,
-        onRefresh: _updateServerStats,
-        header: WaterDropMaterialHeader(distance: 35),
-        child: ListView.builder(
-          itemBuilder: serverCardBuilder,
-          itemCount: _serverStats.length,
-        ),
+      body: SafeArea(
+        child: SmartRefresher(
+            controller: _refreshController,
+            onRefresh: _updateServerStats,
+            header: WaterDropMaterialHeader(distance: 35),
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  expandedHeight: 150.0,
+                  backgroundColor: Colors.transparent,
+                  flexibleSpace: FlexibleSpaceBar(
+                      background: Container(
+                        height: 150,
+                        decoration: BoxDecoration(
+                            border:
+                            Border.all(color: Colors.cyan, width: 4),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(30),
+                                bottomRight: Radius.circular(30)),
+                            image: DecorationImage(
+                                image: AssetImage("images/asd.jpg"),
+                                fit: BoxFit.cover)
+                        ),
+                        child: Center(child: HostStatCard(stat: _hostStats,)),
+                      )
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(serverCardBuilder,
+                      childCount: _serverStats.length
+                  ),
+                )
+              ],
+            )),
       ),
     );
   }

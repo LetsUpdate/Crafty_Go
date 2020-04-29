@@ -138,7 +138,7 @@ String hostStatToJson(HostStat data) => json.encode(data.toJson());
 
 class HostStat {
   final int status;
-  final Data data;
+  final HostStatData data;
   final Errors errors;
   final Errors messages;
 
@@ -152,7 +152,7 @@ class HostStat {
   factory HostStat.fromJson(Map<String, dynamic> json) =>
       HostStat(
         status: json["status"],
-        data: Data.fromJson(json["data"]),
+        data: HostStatData.fromJson(json["data"]),
         errors: Errors.fromJson(json["errors"]),
         messages: Errors.fromJson(json["messages"]),
       );
@@ -166,13 +166,13 @@ class HostStat {
       };
 }
 
-class Data {
+class HostStatData {
   final int id;
   final DateTime bootTime;
   final double cpuUsage;
   final int cpuCores;
   final double cpuCurFreq;
-  final int cpuMaxFreq;
+  final double cpuMaxFreq;
   final double memPercent;
   final String memUsage;
   final String memTotal;
@@ -180,7 +180,7 @@ class Data {
   final String diskUsage;
   final String diskTotal;
 
-  Data({
+  HostStatData({
     this.id,
     this.bootTime,
     this.cpuUsage,
@@ -195,8 +195,8 @@ class Data {
     this.diskTotal,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) =>
-      Data(
+  factory HostStatData.fromJson(Map<String, dynamic> json) =>
+      HostStatData(
         id: json["id"],
         bootTime: DateTime.parse(json["boot_time"]),
         cpuUsage: json["cpu_usage"].toDouble(),
