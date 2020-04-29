@@ -10,20 +10,49 @@ class HostStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.end,
+      crossAxisAlignment: WrapCrossAlignment.center,
       direction: Axis.horizontal,
-      alignment: WrapAlignment.spaceAround,
+      alignment: WrapAlignment.spaceBetween,
       children: <Widget>[
-        _StatItem(),
-        _StatItem(),
-        _StatItem(),
-        _StatItem(),
+        _StatItem(
+          icon: Icons.computer,
+          text: "CPU ${stat.cpuUsage}%\n${(stat.cpuCurFreq / 100).round() /
+              10}Ghz/${(stat.cpuMaxFreq / 100).round() / 10}Ghz\ncores: ${stat
+              .cpuCores}",
+          color: Colors.cyan,
+        ),
+        _StatItem(
+          icon: Icons.memory,
+          color: Colors.green,
+          text: "RAM ${stat.memPercent}%\n ${stat.memUsage}/${stat.memTotal}",
+        ),
+        _StatItem(
+          icon: Icons.storage,
+          color: Colors.deepOrangeAccent,
+          text: "Root Disk\n ${stat.diskPercent}%\n ${stat.diskUsage}/${stat
+              .diskTotal}",
+        ),
+        GestureDetector(
+          onTap: () {},
+          child: _StatItem(
+            icon: Icons.settings,
+            color: Colors.lightGreenAccent,
+            text: "",
+          ),
+        ),
       ],
     );
   }
 }
 
 class _StatItem extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Color color;
+
+  const _StatItem({Key key, this.icon, this.text, this.color})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,14 +71,14 @@ class _StatItem extends StatelessWidget {
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: Colors.cyan),
+                color: color),
             child: Icon(
-              Icons.computer,
+              icon,
               size: 40,
             ),
           ),
           Text(
-            "CPU 100% \n 0.8 Ghz / 2.7 Ghz",
+            text,
             style: TextStyle(color: Colors.white, fontSize: 15),
             textAlign: TextAlign.center,
           )
