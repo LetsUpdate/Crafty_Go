@@ -2,6 +2,7 @@
 
 A controller for CraftyWeb
 
-#Crafty Web
+# Crafty Web
 https://craftycontrol.com/
+
 https://gitlab.com/crafty-controller
