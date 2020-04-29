@@ -2,6 +2,8 @@ import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../dialogs.dart';
+
 class HostStatCard extends StatelessWidget {
   final HostStatData stat;
 
@@ -16,24 +18,29 @@ class HostStatCard extends StatelessWidget {
       children: <Widget>[
         _StatItem(
           icon: Icons.computer,
-          text: "CPU ${stat.cpuUsage}%\n${(stat.cpuCurFreq / 100).round() /
+          text: stat != null ? "CPU ${stat.cpuUsage}%\n${(stat.cpuCurFreq / 100)
+              .round() /
               10}Ghz/${(stat.cpuMaxFreq / 100).round() / 10}Ghz\ncores: ${stat
-              .cpuCores}",
+              .cpuCores}" : "CPI",
           color: Colors.cyan,
         ),
         _StatItem(
           icon: Icons.memory,
           color: Colors.green,
-          text: "RAM ${stat.memPercent}%\n ${stat.memUsage}/${stat.memTotal}",
+          text: stat != null ? "RAM ${stat.memPercent}%\n ${stat
+              .memUsage}/${stat.memTotal}" : "RAM",
         ),
         _StatItem(
           icon: Icons.storage,
           color: Colors.deepOrangeAccent,
-          text: "Root Disk\n ${stat.diskPercent}%\n ${stat.diskUsage}/${stat
-              .diskTotal}",
+          text: stat != null ? "Root Disk\n ${stat.diskPercent}%\n ${stat
+              .diskUsage}/${stat
+              .diskTotal}" : "Storages",
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            settingsDialog(context);
+          },
           child: _StatItem(
             icon: Icons.settings,
             color: Colors.lightGreenAccent,

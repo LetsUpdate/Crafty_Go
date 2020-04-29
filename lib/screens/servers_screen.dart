@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ServersScreen extends StatefulWidget {
+
   ServersScreen({Key key, this.title}) : super(key: key);
   CraftyClient client = new CraftyClient(
       "DOM5VF7D3JHLXUOBPUR3N9UQO5FLXKPJ", "192.168.0.234:8000");
@@ -19,7 +20,7 @@ class ServersScreen extends StatefulWidget {
 
 class _ServersScreenState extends State<ServersScreen> {
   List<Stat> _serverStats = [];
-  HostStatData _hostStats = new HostStatData();
+  HostStatData _hostStats;
 
   @override
   void initState() {
@@ -101,4 +102,5 @@ class _ServersScreenState extends State<ServersScreen> {
       ),
     );
   }
+
 }
