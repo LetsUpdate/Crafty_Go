@@ -22,11 +22,13 @@ Future<void> settingsDialog(BuildContext context) async {
                 children: <Widget>[
                   Text("URL: "),
                   TextField(
+                    decoration: InputDecoration(hintText: "192.168.0.1:8000"),
                     controller: urlController,
                   ),
                   Divider(),
                   Text("apikey: "),
                   TextField(
+                    decoration: InputDecoration(hintText: "hfghg426trtr6w......"),
                     controller: apiKeyController,
                   ),
                 ],
