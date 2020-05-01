@@ -5,6 +5,7 @@ import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
 import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
 import 'package:craftycontroller/cards/host_card.dart';
 import 'package:craftycontroller/cards/server_card.dart';
+import 'package:craftycontroller/screens/server_config_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -102,7 +103,13 @@ class _ServersScreenState extends State<ServersScreen> {
         "Description: ${stat.motd}"
       ],
       background: AssetImage(someImages[index]),
+      onTap: () => _openServerConfigScreen(stat),
     );
+  }
+
+  void _openServerConfigScreen(Stat stat) {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => ServerConfigScreen(widget.client, stat)));
   }
 
   @override
