@@ -13,32 +13,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../dialogs.dart';
 
 class ServersScreen extends StatefulWidget {
-
-  ServersScreen({Key key, this.title}) : super(key: key);
-  CraftyClient client;
-  final String title;
-
   @override
   _ServersScreenState createState() => _ServersScreenState();
 }
 
 
 class _ServersScreenState extends State<ServersScreen> {
+  CraftyClient client;
   List<Stat> _serverStats = [];
   HostStatData _hostStats;
   List<String>  someImages;
 
   @override
   void initState() {
+    initAsync();
     super.initState();
-    _refreshURL();
-    _initImages();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
-      _updateServerStats();
+      if(!this.mounted) {
+          t.cancel();
+          return;
+      }
+      if(null!=client)
+        _updateServerStats();
     });
   }
 
-  void _refreshURL() async{
+  void initAsync () async{
+    await _refreshURL();
+    await _initImages();
+
+  }
+
+
+  Future<void> _refreshURL() async{
     final prefs= await SharedPreferences.getInstance();
     final apiKey=prefs.getString('apiKey');
     final url =prefs.getString('url');
@@ -46,18 +53,18 @@ class _ServersScreenState extends State<ServersScreen> {
       await settingsDialog(context);
       _refreshURL();
     }else {
-      widget.client = new CraftyClient(apiKey, url);
+      client = new CraftyClient(apiKey, url);
       _updateServerStats();
     }
   }
 
   void _updateServerStats() async {
-    if(widget.client==null) {
+    if(client==null) {
       _refreshController.refreshFailed();
       return;
     }
-    _serverStats = (await widget.client.getServerStats()).data;
-    _hostStats = (await widget.client.getHostStats()).data;
+    _serverStats = (await client.getServerStats()).serverStat;
+    _hostStats = (await client.getHostStats()).data;
     _refreshController.refreshCompleted();
     setState(() {});
   }
@@ -67,11 +74,8 @@ class _ServersScreenState extends State<ServersScreen> {
       RefreshController(initialRefresh: true);
 
   Future _initImages() async {
-    // >> To get paths you need these 2 lines
     final manifestContent = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
-
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-    // >> To get paths you need these 2 lines
 
     final imagePaths = manifestMap.keys
         .where((String key) => key.contains('images/ServerCardImgs/'))
@@ -102,14 +106,14 @@ class _ServersScreenState extends State<ServersScreen> {
         "Sever type: ${stat.serverVersion}",
         "Description: ${stat.motd}"
       ],
-      background: AssetImage(someImages[index]),
+      background: AssetImage(someImages[i]),
       onTap: () => _openServerConfigScreen(stat),
     );
   }
 
   void _openServerConfigScreen(Stat stat) {
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => ServerConfigScreen(widget.client, stat)));
+        builder: (context) => ServerConfigScreen(client, stat)));
   }
 
   @override

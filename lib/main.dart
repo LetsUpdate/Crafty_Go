@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.cyan,
         primarySwatch: Colors.blue,
       ),
-      home: ServersScreen(title: 'Crafty Demo'),
+      home: ServersScreen(),
     );
   }
 }
