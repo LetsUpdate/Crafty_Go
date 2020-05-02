@@ -2,7 +2,7 @@ import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../dialogs.dart';
+import '../utils/dialogs.dart';
 
 class HostStatCard extends StatelessWidget {
   final HostStatData stat;

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../dialogs.dart';
+import '../utils/dialogs.dart';
 
 class ServersScreen extends StatefulWidget {
   @override

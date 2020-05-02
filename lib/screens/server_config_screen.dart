@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
 import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
 import 'package:craftycontroller/cards/server_card.dart';
+import 'package:craftycontroller/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -50,9 +51,38 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
     });
   }
 
+
+//todo delayed refresh
+  void _startServer() async {
+    final isNoError = await widget.client.startServer(stat.serverId);
+    utils.msgToUser(
+        isNoError ? "Started!" : "Error: Could not start or already started",
+        !isNoError
+    );
+    _updateServerStats();
+  }
+
+  void _stopServer() async {
+    final isNoError = await widget.client.stopServer(stat.serverId);
+    utils.msgToUser(
+        isNoError ? "Stopping!" : "Stop error",
+        !isNoError
+    );
+    _updateServerStats();
+  }
+
+  void _restartServer() async {
+    final isNoError = await widget.client.restartServer(stat.serverId);
+    utils.msgToUser(
+        isNoError ? "Restarting!" : "Error in restart",
+        !isNoError
+    );
+    _updateServerStats();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -73,7 +103,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                   image: DecorationImage(
                       image: AssetImage("images/clouds.jpg"),
                       fit: BoxFit.cover)),
-              child: ServerCard(
+              child: ServerCard( //todo too bih
                 name: stat.name,
                 players: "${stat.onlinePlayers}/${stat.maxPlayers}",
                 isRunning: stat.serverRunning,
@@ -110,18 +140,21 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                           text: "Start",
                           color: Colors.green,
                           enabled: !stat.serverRunning,
+                          onTap: _startServer,
                         ),
                         SettingButton(
                           iconData: Icons.stop,
                           text: "Stop",
                           color: Colors.red,
                           enabled: stat.serverRunning,
+                          onTap: _stopServer,
                         ),
                         SettingButton(
                           iconData: Icons.sync,
                           text: "Restart",
                           color: Colors.blue,
                           enabled: stat.serverRunning,
+                          onTap: _restartServer,
                         ),
                       ],
                     )
