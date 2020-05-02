@@ -118,19 +118,14 @@ class Stat {
 class Errors {
   Errors();
 
-  factory Errors.fromJson(Map<String, dynamic> json) =>
-      Errors(
-      );
+  factory Errors.fromJson(Map<String, dynamic> json) => Errors();
 
-  Map<String, dynamic> toJson() =>
-      {
-      };
+  Map<String, dynamic> toJson() => {};
 }
 
 // To parse this JSON data, do
 //
 //     final hostStat = hostStatFromJson(jsonString);
-
 
 HostStat hostStatFromJson(String str) => HostStat.fromJson(json.decode(str));
 
@@ -227,5 +222,3 @@ class HostStatData {
         "disk_total": diskTotal,
       };
 }
-
-

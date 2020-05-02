@@ -17,7 +17,8 @@ class ServerCard extends StatelessWidget {
   );
   final TextStyle sTextStyle = new TextStyle(color: Colors.white, fontSize: 16);
 
-  ServerCard({Key key,
+  ServerCard({
+    Key key,
     this.name = "SampleName",
     this.isRunning = false,
     this.ram = "0",
@@ -27,8 +28,7 @@ class ServerCard extends StatelessWidget {
     this.infoBoard = const [],
     this.background,
     this.onTap,
-  })
-      : super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +52,8 @@ class ServerCard extends StatelessWidget {
               blurRadius: 10.0,
             ),
           ],
-          border:
-          Border.all(color: isRunning ? Colors.green : Colors.red, width: 4),
+          border: Border.all(
+              color: isRunning ? Colors.green : Colors.red, width: 4),
           borderRadius: BorderRadius.all(Radius.circular(23)),
           image: DecorationImage(
               image: background,
@@ -142,7 +142,8 @@ class _IconAndText extends StatelessWidget {
   final Color backgroundColor;
   final TextStyle textStyle;
 
-  const _IconAndText({Key key, this.icon, this.text, this.backgroundColor, this.textStyle})
+  const _IconAndText(
+      {Key key, this.icon, this.text, this.backgroundColor, this.textStyle})
       : super(key: key);
 
   @override

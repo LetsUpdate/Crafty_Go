@@ -17,49 +17,45 @@ class ServersScreen extends StatefulWidget {
   _ServersScreenState createState() => _ServersScreenState();
 }
 
-
 class _ServersScreenState extends State<ServersScreen> {
   CraftyClient client;
   List<Stat> _serverStats = [];
   HostStatData _hostStats;
-  List<String>  someImages;
+  List<String> someImages;
 
   @override
   void initState() {
     initAsync();
     super.initState();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
-      if(!this.mounted) {
-          t.cancel();
-          return;
+      if (!this.mounted) {
+        t.cancel();
+        return;
       }
-      if(null!=client)
-        _updateServerStats();
+      if (null != client) _updateServerStats();
     });
   }
 
-  void initAsync () async{
+  void initAsync() async {
     await _refreshURL();
     await _initImages();
-
   }
 
-
-  Future<void> _refreshURL() async{
-    final prefs= await SharedPreferences.getInstance();
-    final apiKey=prefs.getString('apiKey');
-    final url =prefs.getString('url');
-    if(url==null||url.length<1||apiKey==null|| apiKey.length<30){
+  Future<void> _refreshURL() async {
+    final prefs = await SharedPreferences.getInstance();
+    final apiKey = prefs.getString('apiKey');
+    final url = prefs.getString('url');
+    if (url == null || url.length < 1 || apiKey == null || apiKey.length < 30) {
       await settingsDialog(context);
       _refreshURL();
-    }else {
+    } else {
       client = new CraftyClient(apiKey, url);
       _updateServerStats();
     }
   }
 
   void _updateServerStats() async {
-    if(client==null) {
+    if (client == null) {
       _refreshController.refreshFailed();
       return;
     }
@@ -69,12 +65,12 @@ class _ServersScreenState extends State<ServersScreen> {
     setState(() {});
   }
 
-
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 
   Future _initImages() async {
-    final manifestContent = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+    final manifestContent =
+    await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
 
     final imagePaths = manifestMap.keys
@@ -88,10 +84,10 @@ class _ServersScreenState extends State<ServersScreen> {
   Widget serverCardBuilder(BuildContext context, int index) {
     Stat stat = _serverStats[index];
     int i;
-    if(index>someImages.length){
-      i=someImages.length;
-    }else{
-      i=index;
+    if (index > someImages.length) {
+      i = someImages.length;
+    } else {
+      i = index;
     }
 
     return new ServerCard(
@@ -112,8 +108,10 @@ class _ServersScreenState extends State<ServersScreen> {
   }
 
   void _openServerConfigScreen(Stat stat) {
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => ServerConfigScreen(client, stat)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ServerConfigScreen(client, stat)));
   }
 
   @override
@@ -133,28 +131,26 @@ class _ServersScreenState extends State<ServersScreen> {
                       background: Container(
                         height: 150,
                         decoration: BoxDecoration(
-                            border:
-                            Border.all(color: Colors.cyan, width: 4),
+                            border: Border.all(color: Colors.cyan, width: 4),
                             borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(30),
                                 bottomRight: Radius.circular(30)),
                             image: DecorationImage(
-                                image: AssetImage("images/asd.jpg"),
-                                fit: BoxFit.cover)
-                        ),
-                        child: Center(child: HostStatCard(stat: _hostStats,)),
-                      )
-                  ),
+                                image: AssetImage("images/clouds.jpg"),
+                                fit: BoxFit.cover)),
+                        child: Center(
+                            child: HostStatCard(
+                              stat: _hostStats,
+                            )),
+                      )),
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(serverCardBuilder,
-                      childCount: _serverStats.length
-                  ),
+                      childCount: _serverStats.length),
                 )
               ],
             )),
       ),
     );
   }
-
 }
