@@ -103,15 +103,15 @@ class _ServersScreenState extends State<ServersScreen> {
         "Description: ${stat.motd}"
       ],
       background: AssetImage(someImages[i]),
-      onTap: () => _openServerConfigScreen(stat),
+      onTap: () => _openServerConfigScreen(stat, AssetImage(someImages[i])),
     );
   }
 
-  void _openServerConfigScreen(Stat stat) {
+  void _openServerConfigScreen(Stat stat, ImageProvider provider) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ServerConfigScreen(client, stat)));
+            builder: (context) => ServerConfigScreen(client, stat, provider)));
   }
 
   @override

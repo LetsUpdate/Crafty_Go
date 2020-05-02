@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 class ServerConfigScreen extends StatefulWidget {
   final CraftyClient client;
   final Stat _stat;
+  final ImageProvider serverBackgroundImage;
 
-  const ServerConfigScreen(this.client, this._stat, {Key key})
+  const ServerConfigScreen(this.client, this._stat, this.serverBackgroundImage,
+      {Key key})
       : super(key: key);
 
   @override
@@ -52,6 +54,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: Column(
           //mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -61,8 +64,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                     BoxShadow(
                         color: Colors.black54,
                         blurRadius: 15.0,
-                        offset: Offset(0.0, 0.75)
-                    )
+                        offset: Offset(0.0, 0.75))
                   ],
                   border: Border.all(color: Colors.cyan, width: 4),
                   borderRadius: BorderRadius.only(
@@ -83,19 +85,48 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                   "Sever type: ${stat.serverVersion}",
                   "Description: ${stat.motd}"
                 ],
-                background: AssetImage("images/clouds.jpg"),
+                background: widget.serverBackgroundImage,
               ),
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.all(30),
-                margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                padding: EdgeInsets.all(20),
+                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                 constraints: BoxConstraints.expand(),
                 decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.all(Radius.circular(30))
+                    image: DecorationImage(
+                        image: AssetImage("images/test.jpg"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                child: ListView(
+                  children: <Widget>[
+                    Wrap(
+                      alignment: WrapAlignment.spaceEvenly,
+                      children: <Widget>[
+                        SettingButton(
+                          iconData: Icons.play_arrow,
+                          text: "Start",
+                          color: Colors.green,
+                          enabled: !stat.serverRunning,
+                        ),
+                        SettingButton(
+                          iconData: Icons.stop,
+                          text: "Stop",
+                          color: Colors.red,
+                          enabled: stat.serverRunning,
+                        ),
+                        SettingButton(
+                          iconData: Icons.sync,
+                          text: "Restart",
+                          color: Colors.blue,
+                          enabled: stat.serverRunning,
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-                child: Text("asd"),
               ),
             ),
           ],
@@ -105,14 +136,52 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
   }
 }
 
-class Setting extends StatelessWidget {
-  final String settingName;
-  final String buttonText;
+class SettingButton extends StatelessWidget {
+  final IconData iconData;
+  final String text;
+  final Color color;
+  final GestureTapCallback onTap;
+  final bool enabled;
 
-  const Setting({Key key, this.settingName, this.buttonText}) : super(key: key);
+  const SettingButton({Key key,
+    this.iconData,
+    this.text = "",
+    this.color,
+    this.onTap,
+    this.enabled = true})
+      : super(key: key);
+  static const TextStyle _style = TextStyle(color: Colors.white, fontSize: 20);
+  static const Color _disabledColor = Colors.grey;
 
   @override
   Widget build(BuildContext context) {
-    return null;
+    return GestureDetector(
+      onTap: enabled ? onTap ?? () {} : () {},
+      child: Container(
+          padding: EdgeInsets.all(10),
+          margin: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              color: Color.lerp(
+                  enabled ? color : _disabledColor, Colors.black, 0.3)
+                  .withOpacity(0.5),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: Column(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    color: enabled ? color : _disabledColor,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Icon(
+                  iconData,
+                  size: _style.fontSize * 2.5,
+                ),
+              ),
+              Text(
+                text,
+                style: _style,
+              )
+            ],
+          )),
+    );
   }
 }
