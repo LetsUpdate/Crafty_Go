@@ -2,12 +2,12 @@ import 'package:craftycontroller/CraftyAPI/static/models/hotstStat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/dialogs.dart';
-
 class HostStatCard extends StatelessWidget {
   final HostStat stat;
+  final GestureTapCallback onTapSettings;
 
-  const HostStatCard({Key key, this.stat}) : super(key: key);
+  const HostStatCard({Key key, this.stat, this.onTapSettings})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +41,7 @@ class HostStatCard extends StatelessWidget {
               : "Storages",
         ),
         GestureDetector(
-          onTap: () {
-            settingsDialog(context);
-          },
+          onTap: onTapSettings,
           child: _StatItem(
             icon: Icons.settings,
             color: Colors.lightGreenAccent,

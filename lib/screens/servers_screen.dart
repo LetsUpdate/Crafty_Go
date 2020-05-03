@@ -45,13 +45,17 @@ class _ServersScreenState extends State<ServersScreen> {
     await _initImages();
   }
 
+  Future<void> _onSettingsClicked() async {
+    await settingsDialog(context);
+    _refreshURL();
+  }
+
   Future<void> _refreshURL() async {
     final prefs = await SharedPreferences.getInstance();
     final apiKey = prefs.getString('apiKey');
     final url = prefs.getString('url');
     if (url == null || url.length < 1 || apiKey == null || apiKey.length < 30) {
-      await settingsDialog(context);
-      _refreshURL();
+      _onSettingsClicked();
     } else {
       client = new CraftyClient(apiKey, url);
       _updateServerStats();
@@ -150,6 +154,7 @@ class _ServersScreenState extends State<ServersScreen> {
                         child: Center(
                             child: HostStatCard(
                               stat: _hostStat,
+                              onTapSettings: _onSettingsClicked,
                             )),
                       )),
                 ),
