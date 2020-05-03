@@ -33,12 +33,12 @@ class CraftyClient {
   }
 
   Future<String> _makePostRequest(String apiRoute,
-      Map<String, String> params) async {
+      Map<String, String> params, [Map<String, String> body]) async {
     if (params == null) params = Map();
     params.addAll({"token": API_TOKEN});
-    var uri = Uri.https(URL, apiRoute, params);
+    var uri = Uri.https(URL, apiRoute, params,);
     IOClient ioClient = new IOClient(httpClient);
-    http.Response response = await ioClient.post(uri);
+    http.Response response = await ioClient.post(uri, body: body);
     // todo Close the connection idk when 
     log(json.decode(response.body)['errors'].toString());
     return response.body;
@@ -83,7 +83,8 @@ class CraftyClient {
   }
 
   Future<void> runCommand(int serverId,String command)async{
-    final response = await _makeGetRequest(
-        routes.MCAPIRoutes.SEND_CMD, {'id': serverId.toString(),'command':command});
+    final response = await _makePostRequest(
+        routes.MCAPIRoutes.SEND_CMD, {'id': serverId.toString()},
+        {'command': command});
   }
 }

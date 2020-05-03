@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
 import 'package:craftycontroller/CraftyAPI/static/models/log_line.dart';
-import 'package:craftycontroller/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,11 +18,16 @@ class TerminalScreen extends StatefulWidget {
 class _TerminalScreenState extends State<TerminalScreen> {
   List<LogLine> lines;
   final ScrollController _scrollController = new ScrollController();
+  final TextEditingController _textEditingController = new TextEditingController();
 
   Future<void> _updateConsole () async{
     lines =  await widget.client.getServerLogs(widget.serverId);
     setState(() {
     });
+  }
+
+  void _sendCommand(String command) async {
+    widget.client.runCommand(widget.serverId, command);
   }
 
   @override
@@ -66,7 +70,10 @@ class _TerminalScreenState extends State<TerminalScreen> {
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.blueGrey, borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: TextField(),
+                child: TextField(
+                  onSubmitted: _sendCommand,
+                  controller: _textEditingController,
+                ),
               )
             ],
           ),

@@ -39,6 +39,7 @@ class _ServersScreenState extends State<ServersScreen> {
     });
   }
 
+
   void initAsync() async {
     await _refreshURL();
     await _initImages();
