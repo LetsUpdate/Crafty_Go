@@ -12,16 +12,15 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.black.withOpacity(0.4)
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.black.withOpacity(0.4)));
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primaryColor: Colors.cyan,
         primarySwatch: Colors.blue,
       ),
-      home: ServersScreen(title: 'Crafty Demo'),
+      home: ServersScreen(),
     );
   }
 }

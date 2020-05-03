@@ -5,72 +5,73 @@ import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
 import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
 import 'package:craftycontroller/cards/host_card.dart';
 import 'package:craftycontroller/cards/server_card.dart';
+import 'package:craftycontroller/screens/server_config_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../dialogs.dart';
+import '../utils/dialogs.dart';
 
 class ServersScreen extends StatefulWidget {
-
-  ServersScreen({Key key, this.title}) : super(key: key);
-  CraftyClient client;
-  final String title;
-
   @override
   _ServersScreenState createState() => _ServersScreenState();
 }
 
-
 class _ServersScreenState extends State<ServersScreen> {
+  CraftyClient client;
   List<Stat> _serverStats = [];
   HostStatData _hostStats;
-  List<String>  someImages;
+  List<String> someImages;
 
   @override
   void initState() {
+    initAsync();
     super.initState();
-    _refreshURL();
-    _initImages();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
-      _updateServerStats();
+      if (!this.mounted) {
+        t.cancel();
+        return;
+      }
+      if (null != client) _updateServerStats();
     });
   }
 
-  void _refreshURL() async{
-    final prefs= await SharedPreferences.getInstance();
-    final apiKey=prefs.getString('apiKey');
-    final url =prefs.getString('url');
-    if(url==null||url.length<1||apiKey==null|| apiKey.length<30){
+  void initAsync() async {
+    await _refreshURL();
+    await _initImages();
+  }
+
+  Future<void> _refreshURL() async {
+    final prefs = await SharedPreferences.getInstance();
+    final apiKey = prefs.getString('apiKey');
+    final url = prefs.getString('url');
+    if (url == null || url.length < 1 || apiKey == null || apiKey.length < 30) {
       await settingsDialog(context);
       _refreshURL();
-    }else {
-      widget.client = new CraftyClient(apiKey, url);
+    } else {
+      client = new CraftyClient(apiKey, url);
       _updateServerStats();
     }
   }
 
   void _updateServerStats() async {
-    if(widget.client==null) {
+    if (client == null) {
       _refreshController.refreshFailed();
       return;
     }
-    _serverStats = (await widget.client.getServerStats()).data;
-    _hostStats = (await widget.client.getHostStats()).data;
+    _serverStats = (await client.getServerStats()).serverStat;
+    _hostStats = (await client.getHostStats()).data;
     _refreshController.refreshCompleted();
     setState(() {});
   }
-
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 
   Future _initImages() async {
-    // >> To get paths you need these 2 lines
-    final manifestContent = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
-
+    final manifestContent =
+    await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-    // >> To get paths you need these 2 lines
 
     final imagePaths = manifestMap.keys
         .where((String key) => key.contains('images/ServerCardImgs/'))
@@ -83,10 +84,10 @@ class _ServersScreenState extends State<ServersScreen> {
   Widget serverCardBuilder(BuildContext context, int index) {
     Stat stat = _serverStats[index];
     int i;
-    if(index>someImages.length){
-      i=someImages.length;
-    }else{
-      i=index;
+    if (index > someImages.length) {
+      i = someImages.length;
+    } else {
+      i = index;
     }
 
     return new ServerCard(
@@ -101,8 +102,16 @@ class _ServersScreenState extends State<ServersScreen> {
         "Sever type: ${stat.serverVersion}",
         "Description: ${stat.motd}"
       ],
-      background: AssetImage(someImages[index]),
+      background: AssetImage(someImages[i]),
+      onTap: () => _openServerConfigScreen(stat, AssetImage(someImages[i])),
     );
+  }
+
+  void _openServerConfigScreen(Stat stat, ImageProvider provider) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ServerConfigScreen(client, stat, provider)));
   }
 
   @override
@@ -122,28 +131,26 @@ class _ServersScreenState extends State<ServersScreen> {
                       background: Container(
                         height: 150,
                         decoration: BoxDecoration(
-                            border:
-                            Border.all(color: Colors.cyan, width: 4),
+                            border: Border.all(color: Colors.cyan, width: 4),
                             borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(30),
                                 bottomRight: Radius.circular(30)),
                             image: DecorationImage(
-                                image: AssetImage("images/asd.jpg"),
-                                fit: BoxFit.cover)
-                        ),
-                        child: Center(child: HostStatCard(stat: _hostStats,)),
-                      )
-                  ),
+                                image: AssetImage("images/clouds.jpg"),
+                                fit: BoxFit.cover)),
+                        child: Center(
+                            child: HostStatCard(
+                              stat: _hostStats,
+                            )),
+                      )),
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(serverCardBuilder,
-                      childCount: _serverStats.length
-                  ),
+                      childCount: _serverStats.length),
                 )
               ],
             )),
       ),
     );
   }
-
 }

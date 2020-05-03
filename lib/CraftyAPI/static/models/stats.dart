@@ -11,13 +11,13 @@ String serverStatToJson(ServerStat data) => json.encode(data.toJson());
 
 class ServerStat {
   final int status;
-  final List<Stat> data;
+  final List<Stat> serverStat;
   final Errors errors;
   final Errors messages;
 
   ServerStat({
     this.status,
-    this.data,
+    this.serverStat,
     this.errors,
     this.messages,
   });
@@ -25,14 +25,14 @@ class ServerStat {
   factory ServerStat.fromJson(Map<String, dynamic> json) =>
       ServerStat(
         status: json["status"],
-        data: List<Stat>.from(json["data"].map((x) => Stat.fromJson(x))),
+        serverStat: List<Stat>.from(json["data"].map((x) => Stat.fromJson(x))),
         errors: Errors.fromJson(json["errors"]),
         messages: Errors.fromJson(json["messages"]),
       );
 
   Map<String, dynamic> toJson() => {
     "status": status,
-    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "data": List<dynamic>.from(serverStat.map((x) => x.toJson())),
     "errors": errors.toJson(),
     "messages": messages.toJson(),
   };
@@ -118,19 +118,14 @@ class Stat {
 class Errors {
   Errors();
 
-  factory Errors.fromJson(Map<String, dynamic> json) =>
-      Errors(
-      );
+  factory Errors.fromJson(Map<String, dynamic> json) => Errors();
 
-  Map<String, dynamic> toJson() =>
-      {
-      };
+  Map<String, dynamic> toJson() => {};
 }
 
 // To parse this JSON data, do
 //
 //     final hostStat = hostStatFromJson(jsonString);
-
 
 HostStat hostStatFromJson(String str) => HostStat.fromJson(json.decode(str));
 
@@ -227,5 +222,3 @@ class HostStatData {
         "disk_total": diskTotal,
       };
 }
-
-

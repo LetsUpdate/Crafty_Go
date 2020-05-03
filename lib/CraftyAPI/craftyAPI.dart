@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
@@ -14,12 +16,11 @@ class CraftyClient {
     // anwser to certificate: https://stackoverflow.com/questions/49839729/how-to-post-data-to-https-server-in-dart
     bool trustSelfSigned = true;
     httpClient.badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => trustSelfSigned);
+    ((X509Certificate cert, String host, int port) => trustSelfSigned);
   }
 
 
-  Future<String> _makeGetRequest(
-      String apiRoute, Map<String, String> params) async {
+  Future<String> _makeGetRequest(String apiRoute, Map<String, String> params) async {
     if (params == null) params = Map();
     params.addAll({"token": API_TOKEN});
     var uri = Uri.https(URL, apiRoute, params);
@@ -29,14 +30,15 @@ class CraftyClient {
     return response.body;
   }
 
-  Future<String> _makePostRequest(
-      String apiRoute, Map<String, String> params, String body) async {
+  Future<String> _makePostRequest(String apiRoute,
+      Map<String, String> params) async {
     if (params == null) params = Map();
     params.addAll({"token": API_TOKEN});
     var uri = Uri.https(URL, apiRoute, params);
     IOClient ioClient = new IOClient(httpClient);
-    http.Response response= await ioClient.post(uri,body: body);
+    http.Response response = await ioClient.post(uri);
     // todo Close the connection idk when 
+    log(json.decode(response.body)['errors'].toString());
     return response.body;
   }
 
@@ -50,5 +52,26 @@ class CraftyClient {
     final String response =
     await _makeGetRequest(routes.CraftyAPIRoutes.HOST_STATS, null);
     return hostStatFromJson(response);
+  }
+
+  Future<bool> startServer(int serverId) async {
+    final response = await _makePostRequest(
+        routes.MCAPIRoutes.START, {'id': serverId.toString()});
+    final responseCode = json.decode(response)['status'];
+    return responseCode == 200;
+  }
+
+  Future<bool> stopServer(int serverId) async {
+    final response = await _makePostRequest(
+        routes.MCAPIRoutes.STOP, {'id': serverId.toString()});
+    final responseCode = json.decode(response)['status'];
+    return responseCode == 200;
+  }
+
+  Future<bool> restartServer(int serverId) async {
+    final response = await _makePostRequest(
+        routes.MCAPIRoutes.RESTART, {'id': serverId.toString()});
+    final responseCode = json.decode(response)['status'];
+    return responseCode == 200;
   }
 }
