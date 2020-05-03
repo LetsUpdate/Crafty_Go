@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.black.withOpacity(0.4)));
+        SystemUiOverlayStyle(statusBarColor: Colors.black));
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

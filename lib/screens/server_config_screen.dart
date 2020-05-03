@@ -4,9 +4,11 @@ import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
 import 'package:craftycontroller/CraftyAPI/static/models/serverStat.dart';
 
 import 'package:craftycontroller/cards/server_card.dart';
+import 'package:craftycontroller/screens/cmd_screen.dart';
 import 'package:craftycontroller/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ServerConfigScreen extends StatefulWidget {
   final CraftyClient client;
@@ -23,6 +25,7 @@ class ServerConfigScreen extends StatefulWidget {
 
 class _ServerConfigScreenState extends State<ServerConfigScreen> {
   ServerStat stat;
+  final _refreshController = new  RefreshController();
 
   _ServerConfigScreenState(this.stat);
 
@@ -31,11 +34,13 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
     for (var s in stats) {
       if (s.serverId == stat.serverId) {
         setState(() {
+          _refreshController.refreshCompleted();
           stat = s;
         });
         break;
       }
     }
+    _refreshController.refreshFailed();
   }
 
   @override
@@ -55,29 +60,29 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
   void _actionHandler(String action)async{
     action = action.toLowerCase();
     bool wantedState;
-    bool state;
+    dynamic response;
     switch (action){
       case 'start':
-        state= await widget.client.startServer(stat.serverId);
+        response= await widget.client.startServer(stat.serverId);
         wantedState=true;
         break;
       case 'stop':
-        state= await widget.client.stopServer(stat.serverId);
+        response= await widget.client.stopServer(stat.serverId);
         wantedState=false;
         break;
       case 'restart':
-        state= await widget.client.restartServer(stat.serverId);
+        response= await widget.client.restartServer(stat.serverId);
         wantedState=true;
         break;
       default:
         utils.msgToUser("Action not found: $action", true);
     }
-    if(wantedState==stat.serverRunning)
-      return;
-    if(state){
-      utils.msgToUser("Succes: $action", false);
+    //if(wantedState==stat.serverRunning)
+      //return;
+    if(response['status']==200){
+      utils.msgToUser("Succes: ${response['data']}", false);
     }else{
-      utils.msgToUser('Failed: $action', true);
+      utils.msgToUser(response['errors'].toString(), true);
     }
     for(int i =0; i<5; i++){
       await _updateServerStats();
@@ -87,90 +92,108 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
         await Future.delayed(Duration(seconds: 2));
     }
   }
+  void _openTerminal() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TerminalScreen(widget.client,stat.serverId)));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          //mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 15.0,
-                        offset: Offset(0.0, 0.75))
-                  ],
-                  border: Border.all(color: Colors.cyan, width: 4),
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30)),
-                  image: DecorationImage(
-                      image: AssetImage("images/clouds.jpg"),
-                      fit: BoxFit.cover)),
-              child: ServerCard(
-                name: stat.name,
-                players: "${stat.onlinePlayers}/${stat.maxPlayers}",
-                isRunning: stat.serverRunning,
-                ram: stat.memoryUsage,
-                cpu: stat.cpuUsage,
-                infoBoard: [
-                  "Started at: ${stat.serverStartTime}",
-                  "World size: ${stat.worldSize}",
-                  "Sever type: ${stat.serverVersion}",
-                  "Description: ${stat.motd}"
-                ],
-                background: widget.serverBackgroundImage,
-              ),
-            ),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.all(20),
-                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                constraints: BoxConstraints.expand(),
+    return SafeArea(
+
+      child: SmartRefresher(
+        controller: _refreshController,
+        onRefresh: _updateServerStats,
+        header: WaterDropMaterialHeader(distance: 35),
+        child: Scaffold(
+          body: Column(
+            //mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Container(
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("images/test.jpg"),
-                        fit: BoxFit.cover),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black54,
+                          blurRadius: 15.0,
+                          offset: Offset(0.0, 0.75))
+                    ],
+                    border: Border.all(color: Colors.cyan, width: 4),
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20))),
-                child: ListView(
-                  children: <Widget>[
-                    Wrap(
-                      alignment: WrapAlignment.spaceEvenly,
-                      children: <Widget>[
-                        SettingButton(
-                          iconData: Icons.play_arrow,
-                          text: "Start",
-                          color: Colors.green,
-                          enabled: !stat.serverRunning,
-                          onTap: ()=>_actionHandler('start'),
-                        ),
-                        SettingButton(
-                          iconData: Icons.stop,
-                          text: "Stop",
-                          color: Colors.red,
-                          enabled: stat.serverRunning,
-                          onTap: ()=>_actionHandler('stop'),
-                        ),
-                        SettingButton(
-                          iconData: Icons.sync,
-                          text: "Restart",
-                          color: Colors.blue,
-                          enabled: stat.serverRunning,
-                          onTap: ()=>_actionHandler('restart'),
-                        ),
-                      ],
-                    )
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30)),
+                    image: DecorationImage(
+                        image: AssetImage("images/clouds.jpg"),
+                        fit: BoxFit.cover)),
+                child: ServerCard(
+                  name: stat.name,
+                  players: "${stat.onlinePlayers}/${stat.maxPlayers}",
+                  isRunning: stat.serverRunning,
+                  ram: stat.memoryUsage,
+                  cpu: stat.cpuUsage,
+                  infoBoard: [
+                    "Started at: ${stat.serverStartTime}",
+                    "World size: ${stat.worldSize}",
+                    "Sever type: ${stat.serverVersion}",
+                    "Description: ${stat.motd}"
                   ],
+                  background: widget.serverBackgroundImage,
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  constraints: BoxConstraints.expand(),
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage("images/test.jpg"),
+                          fit: BoxFit.cover),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20))),
+                  child: ListView(
+                    children: <Widget>[
+                      Wrap(
+                        alignment: WrapAlignment.spaceEvenly,
+                        children: <Widget>[
+                          SettingButton(
+                            iconData: Icons.play_arrow,
+                            text: "Start",
+                            color: Colors.green,
+                            enabled: !stat.serverRunning,
+                            onTap: ()=>_actionHandler('start'),
+                          ),
+                          SettingButton(
+                            iconData: Icons.stop,
+                            text: "Stop",
+                            color: Colors.red,
+                            enabled: stat.serverRunning,
+                            onTap: ()=>_actionHandler('stop'),
+                          ),
+                          SettingButton(
+                            iconData: Icons.sync,
+                            text: "Restart",
+                            color: Colors.blue,
+                            enabled: stat.serverRunning,
+                            onTap: ()=>_actionHandler('restart'),
+                          ),
+                          SettingButton(
+                            iconData: Icons.code,
+                            text: "Terminal",
+                            color: Colors.black,
+                            iconColor: Colors.white,
+                            onTap: _openTerminal,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -183,13 +206,14 @@ class SettingButton extends StatelessWidget {
   final Color color;
   final GestureTapCallback onTap;
   final bool enabled;
+  final Color iconColor;
 
   const SettingButton({Key key,
     this.iconData,
     this.text = "",
     this.color,
     this.onTap,
-    this.enabled = true})
+    this.enabled = true, this.iconColor=Colors.black})
       : super(key: key);
   static const TextStyle _style = TextStyle(color: Colors.white, fontSize: 20);
   static const Color _disabledColor = Colors.grey;
@@ -214,6 +238,7 @@ class SettingButton extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 child: Icon(
                   iconData,
+                  color: iconColor,
                   size: _style.fontSize * 2.5,
                 ),
               ),

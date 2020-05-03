@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:craftycontroller/CraftyAPI/static/models/hotstStat.dart';
+import 'package:craftycontroller/CraftyAPI/static/models/log_line.dart';
 import 'package:craftycontroller/CraftyAPI/static/models/serverStat.dart';
 import 'package:craftycontroller/CraftyAPI/static/routes.dart' as routes;
 import 'package:http/http.dart' as http;
@@ -57,24 +58,32 @@ class CraftyClient {
     return hostStatFromJson(jsonEncode(decodedResponse['data']));
   }
 
-  Future<bool> startServer(int serverId) async {
+  Future<dynamic> startServer(int serverId) async {
     final response = await _makePostRequest(
         routes.MCAPIRoutes.START, {'id': serverId.toString()});
-    final responseCode = json.decode(response)['status'];
-    return responseCode == 200;
+    return json.decode(response);
   }
 
-  Future<bool> stopServer(int serverId) async {
+  Future<dynamic> stopServer(int serverId) async {
     final response = await _makePostRequest(
         routes.MCAPIRoutes.STOP, {'id': serverId.toString()});
-    final responseCode = json.decode(response)['status'];
-    return responseCode == 200;
+    return json.decode(response);
   }
 
-  Future<bool> restartServer(int serverId) async {
+  Future<dynamic> restartServer(int serverId) async {
     final response = await _makePostRequest(
         routes.MCAPIRoutes.RESTART, {'id': serverId.toString()});
-    final responseCode = json.decode(response)['status'];
-    return responseCode == 200;
+    return json.decode(response);
+  }
+  Future<List<LogLine>> getServerLogs(int serverId) async{
+    final response = await _makeGetRequest(
+        routes.MCAPIRoutes.GET_LOGS, {'id': serverId.toString()});
+    final decodedResponse= json.decode(response);
+    return logLineFromJson(json.encode(decodedResponse['data']));
+  }
+
+  Future<void> runCommand(int serverId,String command)async{
+    final response = await _makeGetRequest(
+        routes.MCAPIRoutes.SEND_CMD, {'id': serverId.toString(),'command':command});
   }
 }
