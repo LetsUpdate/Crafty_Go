@@ -14,7 +14,7 @@ Future<void> settingsDialog(BuildContext context) async {
     barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Rewind and remember'),
+        title: Text('Settings'),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
