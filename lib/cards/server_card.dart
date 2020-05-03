@@ -44,7 +44,7 @@ class ServerCard extends StatelessWidget {
       onTap: onTap ?? () {},
       child: Container(
         padding: EdgeInsets.all(5),
-        height: 200,
+        height: 215,
         decoration: BoxDecoration(
           boxShadow: [
             new BoxShadow(
@@ -96,13 +96,13 @@ class ServerCard extends StatelessWidget {
                 Column(
                   children: <Widget>[
                     _IconAndText(
-                      icon: Icons.apps,
+                      icon: Icons.memory,
                       text: ram,
                       backgroundColor: Colors.deepPurpleAccent.withOpacity(0.5),
                       textStyle: sTextStyle,
                     ),
                     _IconAndText(
-                      icon: Icons.memory,
+                      icon: Icons.computer,
                       text: cpu.toString() + "%",
                       backgroundColor: Colors.deepPurpleAccent.withOpacity(0.5),
                       textStyle: sTextStyle,
@@ -150,14 +150,14 @@ class _IconAndText extends StatelessWidget {
   Widget build(BuildContext context) {
     return _DesignContainer(
       color: backgroundColor,
-      child: Row(
+      child: Column(
         children: <Widget>[
           Icon(
             icon,
             color: textStyle.color,
           ),
           SizedBox(
-            height: 5,
+            height: 2,
           ),
           Text(
             text,

@@ -25,7 +25,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
 
   _ServerConfigScreenState(this.stat);
 
-  void _updateServerStats() async {
+  Future<void> _updateServerStats() async {
     var stats = await widget.client.getServerStats();
     for (var s in stats.serverStat) {
       if (s.serverId == stat.serverId) {
@@ -51,38 +51,45 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
     });
   }
 
-
-//todo delayed refresh
-  void _startServer() async {
-    final isNoError = await widget.client.startServer(stat.serverId);
-    utils.msgToUser(
-        isNoError ? "Started!" : "Error: Could not start or already started",
-        !isNoError
-    );
-    _updateServerStats();
+  void _actionHandler(String action)async{
+    action = action.toLowerCase();
+    bool wantedState;
+    bool state;
+    switch (action){
+      case 'start':
+        state= await widget.client.startServer(stat.serverId);
+        wantedState=true;
+        break;
+      case 'stop':
+        state= await widget.client.stopServer(stat.serverId);
+        wantedState=false;
+        break;
+      case 'restart':
+        state= await widget.client.restartServer(stat.serverId);
+        wantedState=true;
+        break;
+      default:
+        utils.msgToUser("Action not found: $action", true);
+    }
+    if(wantedState==stat.serverRunning)
+      return;
+    if(state){
+      utils.msgToUser("Succes: $action", false);
+    }else{
+      utils.msgToUser('Failed: $action', true);
+    }
+    for(int i =0; i<5; i++){
+      await _updateServerStats();
+      if(stat.serverRunning==wantedState)
+        return;
+      else
+        await Future.delayed(Duration(seconds: 2));
+    }
   }
 
-  void _stopServer() async {
-    final isNoError = await widget.client.stopServer(stat.serverId);
-    utils.msgToUser(
-        isNoError ? "Stopping!" : "Stop error",
-        !isNoError
-    );
-    _updateServerStats();
-  }
-
-  void _restartServer() async {
-    final isNoError = await widget.client.restartServer(stat.serverId);
-    utils.msgToUser(
-        isNoError ? "Restarting!" : "Error in restart",
-        !isNoError
-    );
-    _updateServerStats();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -140,21 +147,21 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                           text: "Start",
                           color: Colors.green,
                           enabled: !stat.serverRunning,
-                          onTap: _startServer,
+                          onTap: ()=>_actionHandler('start'),
                         ),
                         SettingButton(
                           iconData: Icons.stop,
                           text: "Stop",
                           color: Colors.red,
                           enabled: stat.serverRunning,
-                          onTap: _stopServer,
+                          onTap: ()=>_actionHandler('stop'),
                         ),
                         SettingButton(
                           iconData: Icons.sync,
                           text: "Restart",
                           color: Colors.blue,
                           enabled: stat.serverRunning,
-                          onTap: _restartServer,
+                          onTap: ()=>_actionHandler('restart'),
                         ),
                       ],
                     )

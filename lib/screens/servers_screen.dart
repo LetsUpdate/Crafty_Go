@@ -6,6 +6,7 @@ import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
 import 'package:craftycontroller/cards/host_card.dart';
 import 'package:craftycontroller/cards/server_card.dart';
 import 'package:craftycontroller/screens/server_config_screen.dart';
+import 'package:craftycontroller/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +33,8 @@ class _ServersScreenState extends State<ServersScreen> {
         t.cancel();
         return;
       }
-      if (null != client) _updateServerStats();
+      if (null == client) return;
+        _updateServerStats();
     });
   }
 
@@ -59,8 +61,13 @@ class _ServersScreenState extends State<ServersScreen> {
       _refreshController.refreshFailed();
       return;
     }
-    _serverStats = (await client.getServerStats()).serverStat;
-    _hostStats = (await client.getHostStats()).data;
+    try {
+      _serverStats = (await client.getServerStats()).serverStat;
+      _hostStats = (await client.getHostStats()).data;
+    }catch (e){
+      utils.msgToUser(e.toString(), true);
+      _refreshController.refreshFailed();
+    }
     _refreshController.refreshCompleted();
     setState(() {});
   }
