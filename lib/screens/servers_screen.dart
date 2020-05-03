@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
-import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
+import 'package:craftycontroller/CraftyAPI/static/models/hotstStat.dart';
+import 'package:craftycontroller/CraftyAPI/static/models/serverStat.dart';
 import 'package:craftycontroller/cards/host_card.dart';
 import 'package:craftycontroller/cards/server_card.dart';
 import 'package:craftycontroller/screens/server_config_screen.dart';
@@ -20,8 +21,8 @@ class ServersScreen extends StatefulWidget {
 
 class _ServersScreenState extends State<ServersScreen> {
   CraftyClient client;
-  List<Stat> _serverStats = [];
-  HostStatData _hostStats;
+  List<ServerStat> _serverStats = [];
+  HostStat _hostStat;
   List<String> someImages;
 
   @override
@@ -62,8 +63,8 @@ class _ServersScreenState extends State<ServersScreen> {
       return;
     }
     try {
-      _serverStats = (await client.getServerStats()).serverStat;
-      _hostStats = (await client.getHostStats()).data;
+      _serverStats = (await client.getServerStats());
+      _hostStat = (await client.getHostStats());
     }catch (e){
       utils.msgToUser(e.toString(), true);
       _refreshController.refreshFailed();
@@ -89,7 +90,7 @@ class _ServersScreenState extends State<ServersScreen> {
   }
 
   Widget serverCardBuilder(BuildContext context, int index) {
-    Stat stat = _serverStats[index];
+    ServerStat stat = _serverStats[index];
     int i;
     if (index > someImages.length) {
       i = someImages.length;
@@ -114,7 +115,7 @@ class _ServersScreenState extends State<ServersScreen> {
     );
   }
 
-  void _openServerConfigScreen(Stat stat, ImageProvider provider) {
+  void _openServerConfigScreen(ServerStat stat, ImageProvider provider) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -147,7 +148,7 @@ class _ServersScreenState extends State<ServersScreen> {
                                 fit: BoxFit.cover)),
                         child: Center(
                             child: HostStatCard(
-                              stat: _hostStats,
+                              stat: _hostStat,
                             )),
                       )),
                 ),

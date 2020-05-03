@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
-import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
+import 'package:craftycontroller/CraftyAPI/static/models/serverStat.dart';
+
 import 'package:craftycontroller/cards/server_card.dart';
 import 'package:craftycontroller/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/material.dart';
 
 class ServerConfigScreen extends StatefulWidget {
   final CraftyClient client;
-  final Stat _stat;
+  final ServerStat _stat;
   final ImageProvider serverBackgroundImage;
 
   const ServerConfigScreen(this.client, this._stat, this.serverBackgroundImage,
@@ -21,13 +22,13 @@ class ServerConfigScreen extends StatefulWidget {
 }
 
 class _ServerConfigScreenState extends State<ServerConfigScreen> {
-  Stat stat;
+  ServerStat stat;
 
   _ServerConfigScreenState(this.stat);
 
   Future<void> _updateServerStats() async {
     var stats = await widget.client.getServerStats();
-    for (var s in stats.serverStat) {
+    for (var s in stats) {
       if (s.serverId == stat.serverId) {
         setState(() {
           stat = s;
@@ -110,7 +111,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                   image: DecorationImage(
                       image: AssetImage("images/clouds.jpg"),
                       fit: BoxFit.cover)),
-              child: ServerCard( //todo too bih
+              child: ServerCard(
                 name: stat.name,
                 players: "${stat.onlinePlayers}/${stat.maxPlayers}",
                 isRunning: stat.serverRunning,

@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
+import 'package:craftycontroller/CraftyAPI/static/models/hotstStat.dart';
+import 'package:craftycontroller/CraftyAPI/static/models/serverStat.dart';
 import 'package:craftycontroller/CraftyAPI/static/routes.dart' as routes;
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
@@ -42,16 +43,18 @@ class CraftyClient {
     return response.body;
   }
 
-  Future<ServerStat> getServerStats() async {
+  Future<List<ServerStat>> getServerStats() async {
     final String response =
     await _makeGetRequest(routes.CraftyAPIRoutes.SERVER_STATS, null);
-    return serverStatFromJson(response);
+    final decodedResponse= json.decode(response);
+    return serverStatFromJson(jsonEncode(decodedResponse['data']));
   }
 
   Future<HostStat> getHostStats() async {
     final String response =
     await _makeGetRequest(routes.CraftyAPIRoutes.HOST_STATS, null);
-    return hostStatFromJson(response);
+    final decodedResponse= json.decode(response);
+    return hostStatFromJson(jsonEncode(decodedResponse['data']));
   }
 
   Future<bool> startServer(int serverId) async {

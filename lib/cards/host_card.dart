@@ -1,11 +1,11 @@
-import 'package:craftycontroller/CraftyAPI/static/models/stats.dart';
+import 'package:craftycontroller/CraftyAPI/static/models/hotstStat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/dialogs.dart';
 
 class HostStatCard extends StatelessWidget {
-  final HostStatData stat;
+  final HostStat stat;
 
   const HostStatCard({Key key, this.stat}) : super(key: key);
 
