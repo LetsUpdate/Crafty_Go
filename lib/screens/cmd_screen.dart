@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
 import 'package:craftycontroller/CraftyAPI/static/models/log_line.dart';
+import 'package:craftycontroller/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
   final ScrollController _scrollController = new ScrollController();
   final TextEditingController _textEditingController = new TextEditingController();
 
+  //todo this method of frenching terminal is not very effective, but the api is not support other yet
   Future<void> _updateConsole () async{
     lines =  await widget.client.getServerLogs(widget.serverId);
     setState(() {
@@ -27,7 +29,12 @@ class _TerminalScreenState extends State<TerminalScreen> {
   }
 
   void _sendCommand(String command) async {
-    widget.client.runCommand(widget.serverId, command);
+    command = command.trim();
+    _textEditingController.clear();
+    if (command.length > 0)
+      widget.client.runCommand(widget.serverId, command);
+    else
+      utils.msgToUser("You can't send nothing", true);
   }
 
   @override
@@ -70,9 +77,29 @@ class _TerminalScreenState extends State<TerminalScreen> {
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.blueGrey, borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: TextField(
-                  onSubmitted: _sendCommand,
-                  controller: _textEditingController,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextField(
+                        onSubmitted: _sendCommand,
+                        controller: _textEditingController,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _sendCommand(_textEditingController.text);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.black, borderRadius: BorderRadius.all(
+                            Radius.circular(20))),
+                        child: Text("Send!", style: TextStyle(color: Colors
+                            .white, fontSize: 20),),
+                      ),
+                    )
+                  ],
                 ),
               )
             ],
