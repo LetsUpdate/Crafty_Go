@@ -1,4 +1,4 @@
-package hu.red.craftycontroller;
+package hu.red.craftycommander;
 
 import androidx.annotation.NonNull;
 

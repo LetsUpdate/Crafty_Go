@@ -83,6 +83,7 @@ class CraftyClient {
   }
 
   Future<void> runCommand(int serverId,String command)async{
+    //todo some response
     final response = await _makePostRequest(
         routes.MCAPIRoutes.SEND_CMD, {'id': serverId.toString()},
         {'command': command});
