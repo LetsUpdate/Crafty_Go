@@ -1,4 +1,4 @@
-import 'package:craftycontroller/CraftyAPI/static/models/hotstStat.dart';
+import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

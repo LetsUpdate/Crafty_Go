@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:craftycontroller/CraftyAPI/static/models/hotstStat.dart';
-import 'package:craftycontroller/CraftyAPI/static/models/log_line.dart';
-import 'package:craftycontroller/CraftyAPI/static/models/serverStat.dart';
-import 'package:craftycontroller/CraftyAPI/static/routes.dart' as routes;
+import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
+import 'package:craftycommander/CraftyAPI/static/models/log_line.dart';
+import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
+import 'package:craftycommander/CraftyAPI/static/routes.dart' as routes;
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 

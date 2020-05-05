@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
-import 'package:craftycontroller/CraftyAPI/static/models/log_line.dart';
-import 'package:craftycontroller/utils/utils.dart' as utils;
+import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
+import 'package:craftycommander/CraftyAPI/static/models/log_line.dart';
+import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

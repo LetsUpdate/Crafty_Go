@@ -1,5 +1,5 @@
-name: craftycontroller
-description: A controller for CraftyWeb
+name: craftycommander
+description: A client for CraftyWeb
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43

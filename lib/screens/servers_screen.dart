@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:craftycontroller/CraftyAPI/craftyAPI.dart';
-import 'package:craftycontroller/CraftyAPI/static/models/hotstStat.dart';
-import 'package:craftycontroller/CraftyAPI/static/models/serverStat.dart';
-import 'package:craftycontroller/cards/host_card.dart';
-import 'package:craftycontroller/cards/server_card.dart';
-import 'package:craftycontroller/screens/server_config_screen.dart';
-import 'package:craftycontroller/utils/utils.dart' as utils;
+import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
+import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
+import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
+import 'package:craftycommander/cards/host_card.dart';
+import 'package:craftycommander/cards/server_card.dart';
+import 'package:craftycommander/screens/server_config_screen.dart';
+import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
