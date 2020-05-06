@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "820195487570",
+    "firebase_url": "https://crafty-commander.firebaseio.com",
+    "project_id": "crafty-commander",
+    "storage_bucket": "crafty-commander.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820195487570:android:96772614ade8fea0aa148b",
+        "android_client_info": {
+          "package_name": "hu.red.craftycommander"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820195487570-vnekkrp53lqmov19k8d0ga8kqhtqln30.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuU1gnJqdNV9e_S9cceG_UXetd25CrvN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820195487570-vnekkrp53lqmov19k8d0ga8kqhtqln30.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

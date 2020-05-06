@@ -40,6 +40,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
   @override
   void initState() {
     super.initState();
+    int lastLength =0;
     Timer.periodic(Duration(seconds: 1), (Timer t)async {
       // if the page is not exist already then turn off the timer
       if (!this.mounted) {
@@ -47,12 +48,13 @@ class _TerminalScreenState extends State<TerminalScreen> {
         return;
       }
       await _updateConsole();
-        try {
-          _scrollController.animateTo(_scrollController.position.maxScrollExtent,duration: Duration(seconds: 1),curve: Curves.fastOutSlowIn);
-        }catch (e){
-
-        }
+      if(lines!=null&&lines.length>0&&lines.length!=lastLength) {
+        lastLength = lines.length;
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+            duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+      }
     });
+
   }
 
   @override
