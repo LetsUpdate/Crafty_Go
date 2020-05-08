@@ -1,14 +1,13 @@
 import 'dart:ui';
 
+import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
+import 'package:craftycommander/utils/dialogs.dart';
+import 'package:craftycommander/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ServerCard extends StatelessWidget {
-  final String name, players, startedAt;
-  final String ram;
-  final double cpu;
-  final bool isRunning;
-  final List<String> infoBoard;
+  final ServerStat stat;
   final ImageProvider background;
   final GestureTapCallback onTap;
   final TextStyle textStyle = new TextStyle(
@@ -17,23 +16,20 @@ class ServerCard extends StatelessWidget {
   );
   final TextStyle sTextStyle = new TextStyle(color: Colors.white, fontSize: 16);
 
-  ServerCard({
-    Key key,
-    this.name = "SampleName",
-    this.isRunning = false,
-    this.ram = "0",
-    this.cpu = 0,
-    this.players = "0/0",
-    this.startedAt = "00:00:00",
-    this.infoBoard = const [],
-    this.background,
-    this.onTap,
-  }) : super(key: key);
+  ServerCard({Key key, this.stat, this.background, this.onTap}) : super(key: key);
+
+
 
   @override
   Widget build(BuildContext context) {
+    var _infoBoard = [
+    "Started at: ${stat.serverStartTime}",
+    "World size: ${stat.worldSize}",
+    "Sever type: ${stat.serverVersion}",
+    "Description: ${stat.motd}"
+    ];
     List<Widget> _infoList = new List();
-    for (var x in infoBoard ?? []) {
+    for (var x in _infoBoard ?? []) {
       _infoList.add(Text(
         x,
         style: sTextStyle,
@@ -53,7 +49,7 @@ class ServerCard extends StatelessWidget {
             ),
           ],
           border: Border.all(
-              color: isRunning ? Colors.green : Colors.red, width: 4),
+              color: stat.serverRunning ? Colors.green : Colors.red, width: 4),
           borderRadius: BorderRadius.all(Radius.circular(23)),
           image: DecorationImage(
               image: background,
@@ -72,12 +68,17 @@ class ServerCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    name,
+                    stat.name,
                     style: textStyle,
                   ),
-                  Text(
-                    players,
-                    style: textStyle,
+                  GestureDetector(
+                    onTap: (){
+                      //Todo open tehe players screen
+                      },
+                    child: Text(
+                      "${stat.onlinePlayers}/${stat.maxPlayers}",
+                      style: textStyle,
+                    ),
                   ),
                 ],
               ),
@@ -97,13 +98,13 @@ class ServerCard extends StatelessWidget {
                   children: <Widget>[
                     _IconAndText(
                       icon: Icons.memory,
-                      text: ram,
+                      text: stat.memoryUsage,
                       backgroundColor: Colors.deepPurpleAccent.withOpacity(0.5),
                       textStyle: sTextStyle,
                     ),
                     _IconAndText(
                       icon: Icons.computer,
-                      text: cpu.toString() + "%",
+                      text: stat.cpuUsage.toString() + "%",
                       backgroundColor: Colors.deepPurpleAccent.withOpacity(0.5),
                       textStyle: sTextStyle,
                     ),

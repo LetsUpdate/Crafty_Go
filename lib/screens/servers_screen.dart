@@ -41,12 +41,13 @@ class _ServersScreenState extends State<ServersScreen> {
 
 
   void initAsync() async {
-    await _refreshURL();
-    await _initImages();
+     _refreshURL();
+     _initImages();
   }
 
   Future<void> _onSettingsClicked() async {
-    await settingsDialog(context);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await utils.openDialog(context,SettingsDialog(prefs),false);
     _refreshURL();
   }
 
@@ -104,17 +105,7 @@ class _ServersScreenState extends State<ServersScreen> {
     }
 
     return new ServerCard(
-      name: stat.name,
-      players: "${stat.onlinePlayers}/${stat.maxPlayers}",
-      isRunning: stat.serverRunning,
-      ram: stat.memoryUsage,
-      cpu: stat.cpuUsage,
-      infoBoard: [
-        "Started at: ${stat.serverStartTime}",
-        "World size: ${stat.worldSize}",
-        "Sever type: ${stat.serverVersion}",
-        "Description: ${stat.motd}"
-      ],
+      stat: stat,
       background: AssetImage(someImages[i]),
       onTap: () => _openServerConfigScreen(stat, AssetImage(someImages[i])),
     );

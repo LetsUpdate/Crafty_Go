@@ -127,17 +127,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                         image: AssetImage("images/clouds.jpg"),
                         fit: BoxFit.cover)),
                 child: ServerCard(
-                  name: stat.name,
-                  players: "${stat.onlinePlayers}/${stat.maxPlayers}",
-                  isRunning: stat.serverRunning,
-                  ram: stat.memoryUsage,
-                  cpu: stat.cpuUsage,
-                  infoBoard: [
-                    "Started at: ${stat.serverStartTime}",
-                    "World size: ${stat.worldSize}",
-                    "Sever type: ${stat.serverVersion}",
-                    "Description: ${stat.motd}"
-                  ],
+                  stat: stat,
                   background: widget.serverBackgroundImage,
                 ),
               ),

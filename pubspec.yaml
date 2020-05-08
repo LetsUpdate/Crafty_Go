@@ -27,6 +27,8 @@ dependencies:
   pull_to_refresh: ^1.5.7
   shared_preferences: ^0.5.7
   fluttertoast: ^4.0.0
+  firebase_analytics:
+  transparent_image: ^1.0.0
 
 dev_dependencies:
   flutter_test:
