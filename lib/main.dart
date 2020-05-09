@@ -11,23 +11,27 @@ import 'globals.dart'as globals;
 import 'Objects/user.dart';
 
 void main()async {
-  globals.prefs = await SharedPreferences.getInstance();
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  bool isNew =true;
+  final prefs = await SharedPreferences.getInstance();
+
+  final userJsonString = prefs.getString('user');
+
+  if(userJsonString!=null){
+    User user = json.decode(prefs.getString('user'));
+    isNew = (user==null);
+  }
+
+  runApp(MyApp(isNew));
 }
 
 class MyApp extends StatelessWidget {
-
-  //if returns true Means everything is good else we need to start the welcomePage...
-  Future<bool> initApp()async{
-
-    User user = json.decode(globals.prefs.getString('user'));
-    globals.prefs.setString("test", "Beállítva");
-
-    return (user!=null);
-  }
+  final bool isNew;
 
 
-  @override
+
+  const MyApp( this.isNew,{Key key}) : super(key: key);@override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -41,16 +45,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.cyan,
         primarySwatch: Colors.blue,
+        fontFamily: 'Font1'
       ),
-      home: FutureBuilder<bool>(
-        future: initApp(),
-        builder: (context,snapshot){
-          if(snapshot.hasData){
-            return snapshot.data? ServersScreen():WelcomeScreen();
-          }
-          return(Center(child: CircularProgressIndicator(),));
-        },
-      ),
-    );
+      home: isNew? WelcomeScreen():ServersScreen(),
+      );
   }
 }
