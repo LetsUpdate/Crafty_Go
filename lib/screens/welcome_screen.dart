@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
 import 'package:craftycommander/Objects/user.dart';
+import 'package:craftycommander/screens/servers_screen.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:craftycommander/globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomeScreen extends StatelessWidget {
   @override
@@ -20,6 +23,8 @@ class WelcomeScreen extends StatelessWidget {
         new TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'Font1');
 
     Future<String> _validate() async {
+      //todo improve the error checks...
+
       if (urlController.text == null || apiKeyController.text == null)
         return "SomeFields are null";
       final url = urlController.text;
@@ -29,10 +34,56 @@ class WelcomeScreen extends StatelessWidget {
         return '(30< apiKey <50) retuns false';
 
       User user = new User(apiKey, url);
-
-      await user.updateServerStats();
+      try {
+        await user.updateServerStats();
+      }catch(e){
+        return e.toString();
+      }
       if (user.serverStats == null) return 'I cant reach the server';
       return null;
+    }
+
+    void onStartClicked() async{
+      bool isAbort=false;
+      final message =await _validate();
+      if(message!=null){
+        utils.openDialog(context,AlertDialog(
+          title: Text('Do you want to save and continue anyway?'),
+          content: Text("(It can be critical ERROR)\n"+message),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: (){isAbort=true; Navigator.of(context).pop();},
+              child: Text("No"),
+            ),
+            FlatButton(
+              onPressed: (){isAbort=false; Navigator.of(context).pop();},
+              child: Text("Yes"),
+            )
+          ],
+        ));
+      }
+      if(!isAbort) {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('user', json.encode(globals.user));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ServersScreen()));
+      }
+
+    }
+
+    void onTestClicked()async{
+      utils.openDialog(context, new AlertDialog(
+        title: Text("The test results is:",),
+        content: Text(await _validate()?? 'I dont find any problems :D'),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: ()=>Navigator.of(context).pop(),
+            child: Text('OK'),
+          )
+        ],
+      ));
     }
 
     return Scaffold(
@@ -95,12 +146,16 @@ class WelcomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       RaisedButton(
+                        color: Colors.black54,
+                        onPressed: onTestClicked,
                         child: Text(
                           'Test',
                           style: _textStyle,
                         ),
                       ),
                       RaisedButton(
+                        color: Colors.black54,
+                        onPressed: onStartClicked,
                         child: Text(
                           'Start',
                           style: _textStyle,

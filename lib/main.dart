@@ -19,8 +19,10 @@ void main()async {
   final userJsonString = prefs.getString('user');
 
   if(userJsonString!=null){
-    User user = json.decode(prefs.getString('user'));
+    User user = json.decode(userJsonString);
     isNew = (user==null);
+    if(!isNew)
+      globals.user=user;
   }
 
   runApp(MyApp(isNew));
