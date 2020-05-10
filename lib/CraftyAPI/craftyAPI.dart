@@ -14,9 +14,9 @@ class CraftyClient {
   final String URL;
   final HttpClient httpClient = new HttpClient();
 
-  CraftyClient.fromJson(Map<String, dynamic> json)
-      : API_TOKEN = json['API_TOKEN'],
-        URL = json['URL'];
+  factory CraftyClient.fromJson(Map<String, dynamic> json) {
+    return CraftyClient(json['API_TOKEN'], json['URL']);
+  }
   Map<String, dynamic> toJson() => {
     'API_TOKEN': API_TOKEN,
     'URL': URL,

@@ -19,15 +19,12 @@ class ServersScreen extends StatefulWidget {
 }
 
 class _ServersScreenState extends State<ServersScreen> {
-  final List<ServerStat> _serverStats = globals.user.serverStats;
-  final HostStat _hostStat=globals.user.hostStats;
   List<String> someImages;
 
   @override
   void initState() {
-    _initImages();
     super.initState();
-    _updateServer();
+    initAsync();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
       if (!this.mounted) {
         t.cancel();
@@ -37,13 +34,18 @@ class _ServersScreenState extends State<ServersScreen> {
     });
   }
 
+  void initAsync()async{
+    await _initImages();
+    _updateServer();
+  }
+
   Future<void> _onSettingsClicked() async {
     //todo open settings is missing
    utils.msgToUser('The lazy developer disabled this button', true);
   }
 
 
-  void _updateServer() async {
+  Future<void> _updateServer() async {
     if (globals.user == null) {
       _refreshController.refreshFailed();
       return;
@@ -68,13 +70,11 @@ class _ServersScreenState extends State<ServersScreen> {
     final imagePaths = manifestMap.keys
         .where((String key) => key.contains('images/ServerCardImgs/'))
         .toList();
-    setState(() {
       someImages = imagePaths;
-    });
   }
 
   Widget serverCardBuilder(BuildContext context, int index) {
-    ServerStat stat = _serverStats[index];
+    ServerStat stat = globals.user.serverStats[index];
     int i;
     if (index > someImages.length) {
       i = someImages.length;
@@ -122,14 +122,14 @@ class _ServersScreenState extends State<ServersScreen> {
                                 fit: BoxFit.cover)),
                         child: Center(
                             child: HostStatCard(
-                              stat: _hostStat,
+                              stat: globals.user.hostStats,
                               onTapSettings: _onSettingsClicked,
                             )),
                       )),
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(serverCardBuilder,
-                      childCount: _serverStats.length),
+                      childCount:someImages!=null? globals.user.serverStats.length:0),
                 )
               ],
             )),

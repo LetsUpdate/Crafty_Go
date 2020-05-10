@@ -32,7 +32,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
   Future<void> _updateServerStats() async {
     await globals.user.updateServerStats();
     for (var s in globals.user.serverStats) {
-      if (s.serverId == stat.serverId) {
+      if (s.serverId == widget.serverID) {
         setState(() {
           _refreshController.refreshCompleted();
           stat = s;

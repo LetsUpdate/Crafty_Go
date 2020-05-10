@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
 import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
 import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
@@ -28,9 +30,14 @@ class User {
     try {
       isError = (await updateServerStats() && await updateHostStats());
     } catch (e) {
+      log(e.toString());
       isError = true;
     }
     return isError;
+  }
+
+  ServerStat getServersStatById(int serverId){
+    return serverStats.where((element) => element.serverId==serverId).toList().first;
   }
 
   User.fromJson(Map<String, dynamic> json)
