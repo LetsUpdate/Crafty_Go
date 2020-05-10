@@ -5,12 +5,12 @@ import 'package:craftycommander/CraftyAPI/static/models/log_line.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:craftycommander/globals.dart' as globals;
 
 class TerminalScreen extends StatefulWidget {
-  final CraftyClient client;
   final int serverId;
 
-  const TerminalScreen(this.client,this.serverId, {Key key}) : super(key: key);
+  const TerminalScreen(this.serverId, {Key key}) : super(key: key);
 
   @override
   _TerminalScreenState createState() => _TerminalScreenState();
@@ -23,7 +23,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
 
   //todo this method of frenching terminal is not very effective, but the api is not support other yet
   Future<void> _updateConsole () async{
-    lines =  await widget.client.getServerLogs(widget.serverId);
+    lines =  await globals.user.client.getServerLogs(widget.serverId);
     setState(() {
     });
   }
@@ -32,7 +32,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
     command = command.trim();
     _textEditingController.clear();
     if (command.length > 0)
-      widget.client.runCommand(widget.serverId, command);
+      globals.user.client.runCommand(widget.serverId, command);
     else
       utils.msgToUser("You can't send nothing", true);
   }

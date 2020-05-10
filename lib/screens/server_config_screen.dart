@@ -9,29 +9,29 @@ import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:craftycommander/globals.dart' as globals;
 
 class ServerConfigScreen extends StatefulWidget {
-  final CraftyClient client;
-  final ServerStat _stat;
+  final int serverID;
   final ImageProvider serverBackgroundImage;
 
-  const ServerConfigScreen(this.client, this._stat, this.serverBackgroundImage,
-      {Key key})
+  const ServerConfigScreen(this.serverBackgroundImage,this.serverID,
+      {Key key, })
       : super(key: key);
 
   @override
-  _ServerConfigScreenState createState() => _ServerConfigScreenState(_stat);
+  _ServerConfigScreenState createState() => _ServerConfigScreenState();
 }
 
 class _ServerConfigScreenState extends State<ServerConfigScreen> {
   ServerStat stat;
   final _refreshController = new  RefreshController();
 
-  _ServerConfigScreenState(this.stat);
+
 
   Future<void> _updateServerStats() async {
-    var stats = await widget.client.getServerStats();
-    for (var s in stats) {
+    await globals.user.updateServerStats();
+    for (var s in globals.user.serverStats) {
       if (s.serverId == stat.serverId) {
         setState(() {
           _refreshController.refreshCompleted();
@@ -46,7 +46,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
   @override
   void initState() {
     super.initState();
-
+    stat= globals.user.serverStats.where((element) => element.serverId==widget.serverID).toList().first;
     Timer.periodic(Duration(seconds: 10), (Timer t) {
       // if the page is not exist already then turn off the timer
       if (!this.mounted) {
@@ -63,15 +63,15 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
     dynamic response;
     switch (action){
       case 'start':
-        response= await widget.client.startServer(stat.serverId);
+        response= await globals.user.client.startServer(stat.serverId);
         wantedState=true;
         break;
       case 'stop':
-        response= await widget.client.stopServer(stat.serverId);
+        response= await globals.user.client.stopServer(stat.serverId);
         wantedState=false;
         break;
       case 'restart':
-        response= await widget.client.restartServer(stat.serverId);
+        response= await globals.user.client.restartServer(stat.serverId);
         wantedState=true;
         break;
       default:
@@ -96,7 +96,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TerminalScreen(widget.client,stat.serverId)));
+            builder: (context) => TerminalScreen(stat.serverId)));
   }
 
   @override

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
 import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
 import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
 import 'package:craftycommander/cards/host_card.dart';
@@ -13,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:craftycommander/globals.dart'as globals;
 
-import '../utils/dialogs.dart';
 
 class ServersScreen extends StatefulWidget {
   @override
@@ -24,12 +22,6 @@ class _ServersScreenState extends State<ServersScreen> {
   final List<ServerStat> _serverStats = globals.user.serverStats;
   final HostStat _hostStat=globals.user.hostStats;
   List<String> someImages;
-
-  @override
-  void dispose() {
-    utils.msgToUser("DISPOSE", false);
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -101,7 +93,7 @@ class _ServersScreenState extends State<ServersScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ServerConfigScreen(CraftyClient('',''), stat, provider)));
+            builder: (context) => ServerConfigScreen(provider,stat.serverId)));
   }
 
   @override

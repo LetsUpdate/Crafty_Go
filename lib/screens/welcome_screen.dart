@@ -35,55 +35,64 @@ class WelcomeScreen extends StatelessWidget {
       globals.user = new User(apiKey, url);
       try {
         await globals.user.updateAll();
-      }catch(e){
+      } catch (e) {
         return e.toString();
       }
       if (globals.user.serverStats == null) return 'I cant reach the server';
       return null;
     }
 
-    void onStartClicked() async{
-      bool isAbort=false;
-      final message =await _validate();
-      if(message!=null){
-        utils.openDialog(context,AlertDialog(
-          title: Text('Do you want to save and continue anyway?'),
-          content: Text("(It can be critical ERROR)\n"+message),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: (){isAbort=true; Navigator.of(context).pop();},
-              child: Text("No"),
-            ),
-            FlatButton(
-              onPressed: (){isAbort=false; Navigator.of(context).pop();},
-              child: Text("Yes"),
-            )
-          ],
-        ));
+    void onStartClicked() async {
+      bool isAbort = false;
+      final message = await _validate();
+      if (message != null) {
+        utils.openDialog(
+            context,
+            AlertDialog(
+              title: Text('Do you want to save and continue anyway?'),
+              content: Text("(It can be critical ERROR)\n" + message),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    isAbort = true;
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("No"),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    isAbort = false;
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Yes"),
+                )
+              ],
+            ));
       }
-      if(!isAbort) {
+      if (!isAbort) {
         final prefs = await SharedPreferences.getInstance();
-        log((globals.user==null).toString());
+        log((globals.user == null).toString());
         prefs.setString('user', jsonEncode(globals.user));
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ServersScreen()));
+            context, MaterialPageRoute(builder: (context) => ServersScreen()));
       }
-
     }
 
-    void onTestClicked()async{
-      utils.openDialog(context, new AlertDialog(
-        title: Text("The test results is:",),
-        content: Text(await _validate()?? 'I dont find any problems :D'),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: ()=>Navigator.of(context).pop(),
-            child: Text('OK'),
-          )
-        ],
-      ));
+    void onTestClicked() async {
+      utils.openDialog(
+          context,
+          new AlertDialog(
+            title: Text(
+              "The test results is:",
+            ),
+            content: Text(await _validate() ?? 'I dont find any problems :D'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              )
+            ],
+          ));
     }
 
     return Scaffold(
