@@ -32,14 +32,13 @@ class WelcomeScreen extends StatelessWidget {
       if (url.length < 1) return "The url field is empty";
       if (apiKey.length < 30 || apiKey.length > 50)
         return '(30< apiKey <50) retuns false';
-
-      User user = new User(apiKey, url);
+      globals.user = new User(apiKey, url);
       try {
-        await user.updateServerStats();
+        await globals.user.updateAll();
       }catch(e){
         return e.toString();
       }
-      if (user.serverStats == null) return 'I cant reach the server';
+      if (globals.user.serverStats == null) return 'I cant reach the server';
       return null;
     }
 
@@ -64,7 +63,8 @@ class WelcomeScreen extends StatelessWidget {
       }
       if(!isAbort) {
         final prefs = await SharedPreferences.getInstance();
-        prefs.setString('user', json.encode(globals.user));
+        log((globals.user==null).toString());
+        prefs.setString('user', jsonEncode(globals.user));
         Navigator.push(
             context,
             MaterialPageRoute(

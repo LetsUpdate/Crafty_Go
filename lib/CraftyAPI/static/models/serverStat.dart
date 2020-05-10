@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+
 List<ServerStat> serverStatFromJson(String str) => List<ServerStat>.from(json.decode(str).map((x) => ServerStat.fromJson(x)));
 
 String serverStatToJson(List<ServerStat> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

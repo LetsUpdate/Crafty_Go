@@ -7,7 +7,6 @@ import 'dart:convert';
 HostStat hostStatFromJson(String str) => HostStat.fromJson(json.decode(str));
 
 String hostStatToJson(HostStat data) => json.encode(data.toJson());
-
 class HostStat {
   final int id;
   final DateTime bootTime;

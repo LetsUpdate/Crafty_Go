@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:craftycommander/screens/servers_screen.dart';
 import 'package:craftycommander/screens/welcome_screen.dart';
@@ -17,9 +18,9 @@ void main()async {
   final prefs = await SharedPreferences.getInstance();
 
   final userJsonString = prefs.getString('user');
-
+  //log(userJsonString);
   if(userJsonString!=null){
-    User user = json.decode(userJsonString);
+    User user =User.fromJson(jsonDecode(userJsonString));
     isNew = (user==null);
     if(!isNew)
       globals.user=user;
@@ -52,4 +53,5 @@ class MyApp extends StatelessWidget {
       home: isNew? WelcomeScreen():ServersScreen(),
       );
   }
+
 }

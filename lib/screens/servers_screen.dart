@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
 import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
@@ -10,7 +11,7 @@ import 'package:craftycommander/screens/server_config_screen.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:craftycommander/globals.dart'as globals;
 
 import '../utils/dialogs.dart';
 
@@ -20,62 +21,47 @@ class ServersScreen extends StatefulWidget {
 }
 
 class _ServersScreenState extends State<ServersScreen> {
-  CraftyClient client;
-  List<ServerStat> _serverStats = [];
-  HostStat _hostStat;
+  final List<ServerStat> _serverStats = globals.user.serverStats;
+  final HostStat _hostStat=globals.user.hostStats;
   List<String> someImages;
 
   @override
+  void dispose() {
+    utils.msgToUser("DISPOSE", false);
+    super.dispose();
+  }
+
+  @override
   void initState() {
-    initAsync();
+    _initImages();
     super.initState();
+    _updateServer();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
       if (!this.mounted) {
         t.cancel();
         return;
       }
-      if (null == client) return;
-        _updateServerStats();
+      _updateServer();
     });
   }
 
-
-  void initAsync() async {
-     _refreshURL();
-     _initImages();
-  }
-
   Future<void> _onSettingsClicked() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await utils.openDialog(context,SettingsDialog(prefs),false);
-    _refreshURL();
+    //todo open settings is missing
+   utils.msgToUser('The lazy developer disabled this button', true);
   }
 
-  Future<void> _refreshURL() async {
-    final prefs = await SharedPreferences.getInstance();
-    final apiKey = prefs.getString('apiKey');
-    final url = prefs.getString('url');
-    if (url == null || url.length < 1 || apiKey == null || apiKey.length < 30) {
-      _onSettingsClicked();
-    } else {
-      client = new CraftyClient(apiKey, url);
-      _updateServerStats();
-    }
-  }
 
-  void _updateServerStats() async {
-    if (client == null) {
+  void _updateServer() async {
+    if (globals.user == null) {
       _refreshController.refreshFailed();
       return;
     }
-    try {
-      _serverStats = (await client.getServerStats());
-      _hostStat = (await client.getHostStats());
-    }catch (e){
-      utils.msgToUser(e.toString(), true);
+    if(await globals.user.updateAll()) {
+      log("Error during the update");
       _refreshController.refreshFailed();
+    }else{
+      _refreshController.refreshCompleted();
     }
-    _refreshController.refreshCompleted();
     setState(() {});
   }
 
@@ -115,7 +101,7 @@ class _ServersScreenState extends State<ServersScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ServerConfigScreen(client, stat, provider)));
+            builder: (context) => ServerConfigScreen(CraftyClient('',''), stat, provider)));
   }
 
   @override
@@ -124,7 +110,7 @@ class _ServersScreenState extends State<ServersScreen> {
       body: SafeArea(
         child: SmartRefresher(
             controller: _refreshController,
-            onRefresh: _updateServerStats,
+            onRefresh:_updateServer,
             header: WaterDropMaterialHeader(distance: 35),
             child: CustomScrollView(
               slivers: <Widget>[

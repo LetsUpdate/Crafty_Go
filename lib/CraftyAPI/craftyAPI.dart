@@ -14,6 +14,14 @@ class CraftyClient {
   final String URL;
   final HttpClient httpClient = new HttpClient();
 
+  CraftyClient.fromJson(Map<String, dynamic> json)
+      : API_TOKEN = json['API_TOKEN'],
+        URL = json['URL'];
+  Map<String, dynamic> toJson() => {
+    'API_TOKEN': API_TOKEN,
+    'URL': URL,
+  };
+
   CraftyClient(this.API_TOKEN, this.URL) {
     // anwser to certificate: https://stackoverflow.com/questions/49839729/how-to-post-data-to-https-server-in-dart
     bool trustSelfSigned = true;
