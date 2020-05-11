@@ -18,6 +18,10 @@ class WelcomeScreen extends StatelessWidget {
 
     final TextEditingController urlController = new TextEditingController();
     final TextEditingController apiKeyController = new TextEditingController();
+    if(globals.user!=null){
+      urlController.text=globals.user.client.URL;
+      apiKeyController.text=globals.user.client.API_TOKEN;
+    }
 
     final _textStyle =
         new TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'Font1');
@@ -73,7 +77,7 @@ class WelcomeScreen extends StatelessWidget {
         final prefs = await SharedPreferences.getInstance();
         log((globals.user == null).toString());
         prefs.setString('user', jsonEncode(globals.user));
-        Navigator.push(
+        Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => ServersScreen()));
       }
     }

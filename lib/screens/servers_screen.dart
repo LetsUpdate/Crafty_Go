@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
-import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
 import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
 import 'package:craftycommander/cards/host_card.dart';
 import 'package:craftycommander/cards/server_card.dart';
 import 'package:craftycommander/screens/server_config_screen.dart';
+import 'package:craftycommander/screens/welcome_screen.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -20,6 +19,12 @@ class ServersScreen extends StatefulWidget {
 
 class _ServersScreenState extends State<ServersScreen> {
   List<String> someImages;
+
+  @override
+  void dispose() {
+    globals.saveAll();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -40,8 +45,9 @@ class _ServersScreenState extends State<ServersScreen> {
   }
 
   Future<void> _onSettingsClicked() async {
-    //todo open settings is missing
-   utils.msgToUser('The lazy developer disabled this button', true);
+    //todo build an actually settings screen
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
   }
 
 
