@@ -47,16 +47,18 @@ class _PlayersScreenState extends State<PlayersScreen> {
   @override
   Widget build(BuildContext context) {
     final serverStat = globals.user.getServersStatById(widget.serverId);
-    return Scaffold(
-      appBar: AppBar(title: Text('Online players: ${serverStat.onlinePlayers}/${serverStat.maxPlayers}'),backgroundColor: Colors.orange,),
-      body:SmartRefresher(
-          controller: _refreshController,
-          onRefresh: _updatePlayers,
-          child: ListView.builder(
-            itemBuilder: _builder,
-            itemCount: players.length,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text('Online players: ${serverStat.onlinePlayers}/${serverStat.maxPlayers}'),backgroundColor: Colors.orange,),
+        body:SmartRefresher(
+            controller: _refreshController,
+            onRefresh: _updatePlayers,
+            child: ListView.builder(
+              itemBuilder: _builder,
+              itemCount: players.length,
+            ),
           ),
-        ),
+      ),
     );
   }
 }
