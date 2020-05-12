@@ -1,8 +1,9 @@
 import 'dart:ui';
 
 import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
+import 'package:craftycommander/screens/players_screen.dart';
 import 'package:craftycommander/utils/dialogs.dart';
-import 'package:craftycommander/utils/utils.dart';
+import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -73,7 +74,13 @@ class ServerCard extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: (){
-                      //Todo open tehe players screen
+                      if(stat.serverRunning)
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PlayersScreen(stat.serverId)));
+                      else
+                        utils.msgToUser('The server is offline\n no layers to show', true);
                       },
                     child: Text(
                       "${stat.onlinePlayers}/${stat.maxPlayers}",

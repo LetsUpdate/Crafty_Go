@@ -83,4 +83,18 @@ class ServerStat {
     "server_port": serverPort,
     "name": name,
   };
+
+  List<String> getPlayerList(){
+    final list =_replaceAllChar(['[',']','\'',' '], players).split(',');
+    if(list.length==1)
+      if(list[0]=='')
+        return [];
+    return list;
+  }
+  String _replaceAllChar(List<String> fragments, String s){
+    for(var a in fragments){
+      s=s.replaceAll(a, '');
+    }
+    return s;
+  }
 }

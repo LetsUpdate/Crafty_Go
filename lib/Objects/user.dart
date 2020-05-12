@@ -28,7 +28,7 @@ class User {
   Future<bool> updateAll() async {
     bool isError = false;
     try {
-      isError = (await updateServerStats() && await updateHostStats());
+      isError = (await updateServerStats() || await updateHostStats());
     } catch (e) {
       log(e.toString());
       isError = true;

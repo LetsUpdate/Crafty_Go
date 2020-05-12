@@ -1,15 +1,44 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:craftycommander/globals.dart' as globals;
 
 class PlayersScreen extends StatefulWidget {
+  final int serverId;
+
+  PlayersScreen(this.serverId);
   @override
   _PlayersScreenState createState() => _PlayersScreenState();
 }
 
 class _PlayersScreenState extends State<PlayersScreen> {
-  final List<String> players=['asd','asd'];
+   List<String> players;
+   final _refreshController = new RefreshController();
+//todo the form of the players string: "['test', 'Protocoll']"
+  @override
+  void initState() {
+    players = globals.user.getServersStatById(widget.serverId).getPlayerList();
+    super.initState();
+    Timer.periodic(Duration(seconds: 10), (Timer t) {
+      if (!this.mounted) {
+        t.cancel();
+        return;
+      }
+      _updatePlayers();
+    });
+  }
 
+  void _updatePlayers()async{
+    await globals.user.updateServerStats();
+    players = globals.user.getServersStatById(widget.serverId).getPlayerList();
+    setState(() {
 
+    });
+    _refreshController.refreshCompleted();
+  }
 
   Widget _builder(BuildContext context, int index) {
     return _PlayerListItem(players[index]);
@@ -17,11 +46,17 @@ class _PlayersScreenState extends State<PlayersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final serverStat = globals.user.getServersStatById(widget.serverId);
     return Scaffold(
-      body: ListView.builder(
-        itemBuilder: _builder,
-        itemCount: players.length,
-      ),
+      appBar: AppBar(title: Text('Online players: ${serverStat.onlinePlayers}/${serverStat.maxPlayers}'),backgroundColor: Colors.orange,),
+      body:SmartRefresher(
+          controller: _refreshController,
+          onRefresh: _updatePlayers,
+          child: ListView.builder(
+            itemBuilder: _builder,
+            itemCount: players.length,
+          ),
+        ),
     );
   }
 }

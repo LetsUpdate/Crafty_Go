@@ -41,6 +41,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
   void initState() {
     super.initState();
     int lastLength =0;
+    //todo fix the auto scroll
     Timer.periodic(Duration(seconds: 1), (Timer t)async {
       // if the page is not exist already then turn off the timer
       if (!this.mounted) {
@@ -50,7 +51,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
       await _updateConsole();
       if(lines!=null&&lines.length>0&&lines.length!=lastLength) {
         lastLength = lines.length;
-        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent??0,
             duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
       }
     });

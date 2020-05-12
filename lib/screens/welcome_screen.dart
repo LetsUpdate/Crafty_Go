@@ -5,7 +5,6 @@ import 'dart:ui';
 import 'package:craftycommander/Objects/user.dart';
 import 'package:craftycommander/screens/servers_screen.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
-import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:craftycommander/globals.dart' as globals;
