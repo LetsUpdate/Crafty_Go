@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
 import 'package:craftycommander/CraftyAPI/static/models/log_line.dart';
-import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
+import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 import 'package:craftycommander/CraftyAPI/static/routes.dart' as routes;
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
@@ -52,7 +52,7 @@ class CraftyClient {
     return response.body;
   }
 
-  Future<List<ServerStat>> getServerStats() async {
+  Future<List<McServer>> getServerStats() async {
     final String response =
     await _makeGetRequest(routes.CraftyAPIRoutes.SERVER_STATS, null);
     final decodedResponse= json.decode(response);
@@ -96,4 +96,7 @@ class CraftyClient {
         routes.MCAPIRoutes.SEND_CMD, {'id': serverId.toString()},
         {'command': command});
   }
+
+
 }
+

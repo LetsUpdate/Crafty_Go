@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
 import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
-import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
+import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 
 class User {
   CraftyClient client;
-  List<ServerStat> serverStats;
+  List<McServer> serverStats;
   HostStat hostStats;
 
   User(String apiKey, String url) {
@@ -36,7 +36,7 @@ class User {
     return isError;
   }
 
-  ServerStat getServersStatById(int serverId){
+  McServer getServersStatById(int serverId){
     return serverStats.where((element) => element.serverId==serverId).toList().first;
   }
 

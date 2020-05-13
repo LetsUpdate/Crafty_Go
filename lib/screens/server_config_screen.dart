@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
-import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
+import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 
 import 'package:craftycommander/cards/server_card.dart';
 import 'package:craftycommander/screens/cmd_screen.dart';
@@ -24,7 +24,7 @@ class ServerConfigScreen extends StatefulWidget {
 }
 
 class _ServerConfigScreenState extends State<ServerConfigScreen> {
-  ServerStat stat;
+  McServer stat;
   final _refreshController = new  RefreshController();
 
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'package:craftycommander/CraftyAPI/static/models/serverStat.dart';
+import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 import 'package:craftycommander/cards/host_card.dart';
 import 'package:craftycommander/cards/server_card.dart';
 import 'package:craftycommander/screens/server_config_screen.dart';
@@ -80,7 +80,7 @@ class _ServersScreenState extends State<ServersScreen> {
   }
 
   Widget serverCardBuilder(BuildContext context, int index) {
-    ServerStat stat = globals.user.serverStats[index];
+    McServer stat = globals.user.serverStats[index];
     int i;
     if (index > someImages.length) {
       i = someImages.length;
@@ -95,7 +95,7 @@ class _ServersScreenState extends State<ServersScreen> {
     );
   }
 
-  void _openServerConfigScreen(ServerStat stat, ImageProvider provider) {
+  void _openServerConfigScreen(McServer stat, ImageProvider provider) {
     Navigator.push(
         context,
         MaterialPageRoute(
