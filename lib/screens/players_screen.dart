@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:craftycommander/CraftyAPI/player_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -15,12 +16,14 @@ class PlayersScreen extends StatefulWidget {
 }
 
 class _PlayersScreenState extends State<PlayersScreen> {
+   PlayerManager _playerManager;
    List<String> players;
    final _refreshController = new RefreshController();
-//todo the form of the players string: "['test', 'Protocoll']"
+  //the form of the players string: "['test', 'Protocoll']"
   @override
   void initState() {
     players = globals.user.getServersStatById(widget.serverId).getPlayerList();
+    _playerManager = new PlayerManager(widget.serverId, globals.user.client);
     super.initState();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
       if (!this.mounted) {
