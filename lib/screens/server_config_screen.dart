@@ -1,15 +1,13 @@
 import 'dart:async';
 
-import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
 import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
-
 import 'package:craftycommander/cards/server_card.dart';
+import 'package:craftycommander/globals.dart' as globals;
 import 'package:craftycommander/screens/cmd_screen.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:craftycommander/globals.dart' as globals;
 
 class ServerConfigScreen extends StatefulWidget {
   final int serverID;
@@ -197,15 +195,21 @@ class SettingButton extends StatelessWidget {
   final GestureTapCallback onTap;
   final bool enabled;
   final Color iconColor;
+  final double size;
 
-  const SettingButton({Key key,
-    this.iconData,
-    this.text = "",
-    this.color,
+  SettingButton(
+      {Key key,
+      this.iconData,
+      this.text = "",
+      this.color,
     this.onTap,
-    this.enabled = true, this.iconColor=Colors.black})
-      : super(key: key);
-  static const TextStyle _style = TextStyle(color: Colors.white, fontSize: 20);
+    this.enabled = true,
+    this.iconColor = Colors.black,
+    this.size = 20}) {
+    _style = TextStyle(color: Colors.white, fontSize: size);
+  }
+
+  TextStyle _style;
   static const Color _disabledColor = Colors.grey;
 
   @override
@@ -213,8 +217,8 @@ class SettingButton extends StatelessWidget {
     return GestureDetector(
       onTap: enabled ? onTap ?? () {} : () {},
       child: Container(
-          padding: EdgeInsets.all(10),
-          margin: EdgeInsets.all(10),
+          padding: EdgeInsets.all(10 * (size / 20)),
+          margin: EdgeInsets.all(2),
           decoration: BoxDecoration(
               color: Color.lerp(
                   enabled ? color : _disabledColor, Colors.black, 0.3)
