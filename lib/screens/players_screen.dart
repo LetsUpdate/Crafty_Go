@@ -16,13 +16,20 @@ class PlayersScreen extends StatefulWidget {
 }
 
 class _PlayersScreenState extends State<PlayersScreen> {
-   PlayerManager _playerManager;
-   List<String> players;
-   final _refreshController = new RefreshController();
+  PlayerManager _playerManager;
+  bool selecting = false;
+  List<String> players;
+  final _refreshController = new RefreshController();
   //the form of the players string: "['test', 'Protocoll']"
   @override
   void initState() {
     players = [
+      'asd',
+      'nani',
+      'ajsdj',
+      'asd',
+      'nani',
+      'ajsdj',
       'asd',
       'nani',
       'ajsdj',
@@ -39,21 +46,31 @@ class _PlayersScreenState extends State<PlayersScreen> {
     });
   }
 
-  void _updatePlayers()async{
+  void _updatePlayers() async {
     await globals.user.updateServerStats();
     players = [
+      'asd',
+      'nani',
+      'ajsdj',
+      'asd',
+      'nani',
+      'ajsdj',
       'asd',
       'nani',
       'ajsdj',
       'test'
     ]; //globals.user.getServersStatById(widget.serverId).getPlayerList();
     setState(() {
-
+      selecting = !selecting;
     });
     _refreshController.refreshCompleted();
   }
 
   Widget _builder(BuildContext context, int index) {
+    if (index > players.length - 1)
+      return SizedBox(
+        height: 100,
+      );
     return _PlayerListItem(players[index]);
   }
 
@@ -62,15 +79,88 @@ class _PlayersScreenState extends State<PlayersScreen> {
     final serverStat = globals.user.getServersStatById(widget.serverId);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('Online players: ${serverStat.onlinePlayers}/${serverStat.maxPlayers}'),backgroundColor: Colors.orange,),
-        body:SmartRefresher(
-            controller: _refreshController,
-            onRefresh: _updatePlayers,
-            child: ListView.builder(
-              itemBuilder: _builder,
-              itemCount: players.length,
+        appBar: AppBar(
+          title: Text(
+              'Online players: ${serverStat.onlinePlayers}/${serverStat.maxPlayers}'),
+          backgroundColor: Colors.orange,
+        ),
+        body: Stack(
+          children: <Widget>[
+            SmartRefresher(
+              controller: _refreshController,
+              onRefresh: _updatePlayers,
+              child: ListView.builder(
+                itemBuilder: _builder,
+                itemCount: selecting ? players.length + 1 : players.length,
+              ),
             ),
-          ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: AnimatedCrossFade(
+                secondChild: Container(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                        child: Wrap(children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              SettingButton(
+                                iconData: Icons.offline_bolt,
+                                text: 'OP',
+                                color: Colors.blue,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              SettingButton(
+                                iconData: Icons.remove_circle_outline,
+                                text: 'DE-OP',
+                                color: Colors.blue,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              SettingButton(
+                                iconData: Icons.close,
+                                text: "kick",
+                                color: Colors.yellow,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              SettingButton(
+                                iconData: Icons.warning,
+                                text: "Kill",
+                                color: Colors.red,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              SettingButton(
+                                iconData: Icons.delete,
+                                text: "ban",
+                                color: Colors.red,
+                                iconColor: Colors.black,
+                                size: 18,
+                              ),
+                            ],
+                          ),
+                        ]),
+                  ),
+                ),
+                firstChild: Container(width: 500,),
+                crossFadeState: selecting
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: Duration(milliseconds: 1000),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -104,47 +194,23 @@ class __PlayerListItemState extends State<_PlayerListItem> {
           border: Border.all(color: Colors.orange),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        child: Column(
+        child: Row(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    widget.playerName,
-                    style: TextStyle(fontSize: 30, color: Colors.white),
-                  ),
-                ),
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: FadeInImage.memoryNetwork(
-                      image:
-                          "https://minotar.net/avatar/${widget.playerName}/50.png",
-                      fadeInCurve: Curves.fastOutSlowIn,
-                      width: 50,
-                      placeholder: kTransparentImage,
-                    )),
-              ],
+            Expanded(
+              child: Text(
+                widget.playerName,
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
             ),
-            opened
-                ? Wrap(
-                    children: <Widget>[
-                      SettingButton(
-                        iconData: Icons.stop,
-                        text: "Stop",
-                        color: Colors.red,
-                        onTap: () {},
-                        size: 15,
-                      ),
-                      SettingButton(
-                        iconData: Icons.sync,
-                        text: "Restart",
-                        color: Colors.blue,
-                        onTap: () {},
-                        size: 15,
-                      ),
-                    ],
-                  )
-                : Container()
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: FadeInImage.memoryNetwork(
+                image: "https://minotar.net/avatar/${widget.playerName}/50.png",
+                fadeInCurve: Curves.fastOutSlowIn,
+                width: 50,
+                placeholder: kTransparentImage,
+              ),
+            ),
           ],
         ),
       ),
