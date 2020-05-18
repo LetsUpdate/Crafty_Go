@@ -4,6 +4,7 @@ import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 import 'package:craftycommander/cards/server_card.dart';
 import 'package:craftycommander/globals.dart' as globals;
 import 'package:craftycommander/screens/cmd_screen.dart';
+import 'package:craftycommander/screens/players_screen.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -168,6 +169,12 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                             onTap: ()=>_actionHandler('restart'),
                           ),
                           SettingButton(
+                            iconData: Icons.people,
+                            text: "Players",
+                            color: Colors.orangeAccent,
+                            onTap: ()=>utils.navigateTo(context, PlayersScreen(widget.serverID)),
+                          ),
+                          SettingButton(
                             iconData: Icons.code,
                             text: "Terminal",
                             color: Colors.black,
@@ -218,7 +225,7 @@ class SettingButton extends StatelessWidget {
       onTap: enabled ? onTap ?? () {} : () {},
       child: Container(
           padding: EdgeInsets.all(10 * (size / 20)),
-          margin: EdgeInsets.all(2),
+          margin: EdgeInsets.all(5),
           decoration: BoxDecoration(
               color: Color.lerp(
                   enabled ? color : _disabledColor, Colors.black, 0.3)
