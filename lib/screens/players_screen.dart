@@ -75,7 +75,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
         height: 100,
       );
     return GestureDetector(
-        onTap: () => utils.openDialog(context, _PlayerDialog(players[index])),
+        onTap: () => utils.openDialog(context, _PlayerDialog(players[index],_playerManager)),
         child: _PlayerListItem(players[index]));
   }
 
@@ -149,11 +149,30 @@ class __PlayerListItemState extends State<_PlayerListItem> {
 
 class _PlayerDialog extends StatelessWidget {
   final String playerName;
+  final PlayerManager playerManager;
 
   const _PlayerDialog(
-    this.playerName, {
+    this.playerName,
+      this.playerManager,{
     Key key,
   }) : super(key: key);
+
+  void onOP () async{
+
+  }
+  void onDEOP () async{
+
+  }
+  void onKILL () async{
+
+  }
+  void onKICK () async{
+
+  }
+  void onBAN () async{
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
