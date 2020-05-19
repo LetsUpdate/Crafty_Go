@@ -5,7 +5,9 @@ class PlayerManager{
   final CraftyClient _client;
 
   PlayerManager(this._serverId, this._client);
-  Future<bool> runPlayerAction(PlayerActions playerAction, [String option]) async{
+
+  Future<bool> runPlayerAction(PlayerActions playerAction,
+      [String option = '']) async {
     String command ='';
     switch (playerAction){
       case PlayerActions.kill:
@@ -27,7 +29,7 @@ class PlayerManager{
         command='tp';
         break;
     }
-    command+= ' '+option??'';
+    command += ' ' + option;
     return await _client.runCommand(_serverId, command.trim());
   }
 }

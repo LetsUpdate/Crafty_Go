@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:craftycommander/CraftyAPI/player_manager.dart';
 import 'package:craftycommander/globals.dart' as globals;
@@ -8,7 +7,6 @@ import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class PlayersScreen extends StatefulWidget {
   final int serverId;
@@ -26,18 +24,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
   //the form of the players string: "['test', 'Protocoll']"
   @override
   void initState() {
-    players = [
-      'asd',
-      'nani',
-      'ajsdj',
-      'asd',
-      'nani',
-      'ajsdj',
-      'asd',
-      'nani',
-      'ajsdj',
-      'test'
-    ]; //globals.user.getServersStatById(widget.serverId).getPlayerList();
+    players = globals.user.getServersStatById(widget.serverId).getPlayerList();
     _playerManager = new PlayerManager(widget.serverId, globals.user.client);
     super.initState();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
@@ -51,18 +38,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
 
   void _updatePlayers() async {
     await globals.user.updateServerStats();
-    players = [
-      'asd',
-      'nani',
-      'ajsdj',
-      'asd',
-      'nani',
-      'ajsdj',
-      'asd',
-      'nani',
-      'ajsdj',
-      'test'
-    ]; //globals.user.getServersStatById(widget.serverId).getPlayerList();
+    players = globals.user.getServersStatById(widget.serverId).getPlayerList();
     setState(() {
       selecting = !selecting;
     });
@@ -134,11 +110,11 @@ class __PlayerListItemState extends State<_PlayerListItem> {
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: FadeInImage.memoryNetwork(
+            child: FadeInImage.assetNetwork(
               image: "https://minotar.net/avatar/${widget.playerName}/50.png",
-              fadeInCurve: Curves.fastOutSlowIn,
+              fadeInCurve: Curves.linear,
               width: 50,
-              placeholder: kTransparentImage,
+              placeholder: 'images/steve.png',
             ),
           ),
         ],
@@ -157,27 +133,38 @@ class _PlayerDialog extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  void _onOP () async{
-    final isError= await playerManager.runPlayerAction(PlayerActions.op);
-    _response(isError);
+  void _onOP(BuildContext context) async {
+    final isError =
+        await playerManager.runPlayerAction(PlayerActions.op, playerName);
+    _response(context, isError);
   }
-  void _onDEOP () async{
-    final isError= await playerManager.runPlayerAction(PlayerActions.deOp);
-    _response(isError);
+
+  void _onDEOP(BuildContext context) async {
+    final isError =
+        await playerManager.runPlayerAction(PlayerActions.deOp, playerName);
+    _response(context, isError);
   }
-  void _onKILL () async{
-    final isError= await playerManager.runPlayerAction(PlayerActions.kill);
-    _response(isError);
+
+  void _onKILL(BuildContext context) async {
+    final isError =
+        await playerManager.runPlayerAction(PlayerActions.kill, playerName);
+    _response(context, isError);
   }
-  void _onKICK () async{
-    final isError= await playerManager.runPlayerAction(PlayerActions.kick);
-    _response(isError);
+
+  void _onKICK(BuildContext context) async {
+    final isError =
+        await playerManager.runPlayerAction(PlayerActions.kick, playerName);
+    _response(context, isError);
   }
-  void _onBAN () async{
-    final isError= await playerManager.runPlayerAction(PlayerActions.ban);
-    _response(isError);
+
+  void _onBAN(BuildContext context) async {
+    final isError =
+        await playerManager.runPlayerAction(PlayerActions.ban, playerName);
+    _response(context, isError);
   }
-  void _response(bool isError){
+
+  void _response(BuildContext context, bool isError) {
+    Navigator.pop(context);
     if(isError){
       utils.msgToUser("Send failed", isError);
     }
@@ -189,7 +176,7 @@ class _PlayerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      backgroundColor: Colors.greenAccent.withOpacity(0.8),
+      backgroundColor: Colors.orangeAccent.withOpacity(0.8),
       title: Text("What do you want with: $playerName"),
       children: <Widget>[
         Wrap(
@@ -200,7 +187,7 @@ class _PlayerDialog extends StatelessWidget {
               text: 'OP',
               color: Colors.blue,
               size: 18,
-              onTap: _onOP,
+              onTap: () => _onOP(context),
             ),
             SizedBox(
               width: 10,
@@ -210,7 +197,7 @@ class _PlayerDialog extends StatelessWidget {
               text: 'DE-OP',
               color: Colors.blue,
               size: 18,
-              onTap: _onDEOP,
+              onTap: () => _onDEOP(context),
             ),
             SizedBox(
               width: 10,
@@ -220,7 +207,7 @@ class _PlayerDialog extends StatelessWidget {
               text: "kick",
               color: Colors.yellow,
               size: 18,
-              onTap: _onKICK,
+              onTap: () => _onKICK(context),
             ),
             SizedBox(
               width: 10,
@@ -230,7 +217,7 @@ class _PlayerDialog extends StatelessWidget {
               text: "Kill",
               color: Colors.red,
               size: 18,
-              onTap: _onKILL,
+              onTap: () => _onKILL(context),
             ),
             SizedBox(
               width: 10,
@@ -240,7 +227,7 @@ class _PlayerDialog extends StatelessWidget {
               text: "ban",
               color: Colors.red,
               iconColor: Colors.black,
-              onTap: _onBAN,
+              onTap: () => _onBAN(context),
               size: 18,
             ),
             SizedBox(

@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
 import 'package:craftycommander/CraftyAPI/static/models/log_line.dart';
-import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 import 'package:craftycommander/CraftyAPI/static/routes.dart' as routes;
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
@@ -91,7 +91,6 @@ class CraftyClient {
   }
 
   Future<bool> runCommand(int serverId,String command)async{
-    //todo some response
     final response = await _makePostRequest(
         routes.MCAPIRoutes.SEND_CMD, {'id': serverId.toString()},
         {'command': command});
