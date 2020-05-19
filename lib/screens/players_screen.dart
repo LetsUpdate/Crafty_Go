@@ -157,20 +157,33 @@ class _PlayerDialog extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  void onOP () async{
-
+  void _onOP () async{
+    final isError= await playerManager.runPlayerAction(PlayerActions.op);
+    _response(isError);
   }
-  void onDEOP () async{
-
+  void _onDEOP () async{
+    final isError= await playerManager.runPlayerAction(PlayerActions.deOp);
+    _response(isError);
   }
-  void onKILL () async{
-
+  void _onKILL () async{
+    final isError= await playerManager.runPlayerAction(PlayerActions.kill);
+    _response(isError);
   }
-  void onKICK () async{
-
+  void _onKICK () async{
+    final isError= await playerManager.runPlayerAction(PlayerActions.kick);
+    _response(isError);
   }
-  void onBAN () async{
-
+  void _onBAN () async{
+    final isError= await playerManager.runPlayerAction(PlayerActions.ban);
+    _response(isError);
+  }
+  void _response(bool isError){
+    if(isError){
+      utils.msgToUser("Send failed", isError);
+    }
+    else{
+      utils.msgToUser("Sent!", isError);
+    }
   }
 
   @override
@@ -187,6 +200,7 @@ class _PlayerDialog extends StatelessWidget {
               text: 'OP',
               color: Colors.blue,
               size: 18,
+              onTap: _onOP,
             ),
             SizedBox(
               width: 10,
@@ -196,6 +210,7 @@ class _PlayerDialog extends StatelessWidget {
               text: 'DE-OP',
               color: Colors.blue,
               size: 18,
+              onTap: _onDEOP,
             ),
             SizedBox(
               width: 10,
@@ -205,6 +220,7 @@ class _PlayerDialog extends StatelessWidget {
               text: "kick",
               color: Colors.yellow,
               size: 18,
+              onTap: _onKICK,
             ),
             SizedBox(
               width: 10,
@@ -214,6 +230,7 @@ class _PlayerDialog extends StatelessWidget {
               text: "Kill",
               color: Colors.red,
               size: 18,
+              onTap: _onKILL,
             ),
             SizedBox(
               width: 10,
@@ -223,6 +240,7 @@ class _PlayerDialog extends StatelessWidget {
               text: "ban",
               color: Colors.red,
               iconColor: Colors.black,
+              onTap: _onBAN,
               size: 18,
             ),
             SizedBox(
@@ -234,9 +252,7 @@ class _PlayerDialog extends StatelessWidget {
               color: Colors.white,
               iconColor: Colors.black,
               size: 18,
-              onTap: ()=>
-
-                  Navigator.pop(context),
+              onTap: ()=> Navigator.pop(context),
             ),
           ],
         )

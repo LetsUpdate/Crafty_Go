@@ -1,11 +1,11 @@
 import 'craftyAPI.dart';
 
 class PlayerManager{
-  final int serverId;
-  final CraftyClient client;
+  final int _serverId;
+  final CraftyClient _client;
 
-  PlayerManager(this.serverId, this.client);
-  Future<void> runPlayerAction(PlayerActions playerAction, [String option]) async{
+  PlayerManager(this._serverId, this._client);
+  Future<bool> runPlayerAction(PlayerActions playerAction, [String option]) async{
     String command ='';
     switch (playerAction){
       case PlayerActions.kill:
@@ -28,7 +28,7 @@ class PlayerManager{
         break;
     }
     command+= ' '+option??'';
-    await client.runCommand(serverId, command.trim());
+    return await _client.runCommand(_serverId, command.trim());
   }
 }
 enum PlayerActions {
