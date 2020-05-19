@@ -73,7 +73,7 @@ class ServerCard extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: (){
-                      if (true) //(stat.serverRunning)
+                      if (stat.serverRunning)
                         Navigator.push(
                             context,
                             MaterialPageRoute(
