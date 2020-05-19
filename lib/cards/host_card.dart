@@ -1,6 +1,8 @@
 import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
+import 'package:craftycommander/generated/i18n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:craftycommander/globals.dart'as globals;
 
 class HostStatCard extends StatelessWidget {
   final HostStat stat;
@@ -32,14 +34,6 @@ class HostStatCard extends StatelessWidget {
               ? "RAM ${stat.memPercent}%\n ${stat.memUsage}/${stat.memTotal}"
               : "RAM",
         ),
-        _StatItem(
-          icon: Icons.storage,
-          color: Colors.deepOrangeAccent,
-          text: stat != null
-              ? "Root Disk\n ${stat.diskPercent}%\n ${stat.diskUsage}/${stat
-              .diskTotal}"
-              : "Storages",
-        ),
         GestureDetector(
           onTap: onTapSettings,
           child: _StatItem(
@@ -48,7 +42,21 @@ class HostStatCard extends StatelessWidget {
             text: "",
           ),
         ),
+        globals.user.isCached?_StatItem(
+          icon: Icons.warning,
+          color: Colors.red,
+          text: "Cached info\n last updated at:\n ${globals.user.getLastUpdated()}",
+        ):SizedBox(),
+        _StatItem(
+          icon: Icons.storage,
+          color: Colors.deepOrangeAccent,
+          text: stat != null
+              ? "Root Disk\n ${stat.diskPercent}%\n ${stat.diskUsage}/${stat
+              .diskTotal}"
+              : "Storages",
+        ),
       ],
+
     );
   }
 }

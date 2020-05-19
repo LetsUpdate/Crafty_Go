@@ -9,23 +9,23 @@ import 'package:craftycommander/globals.dart' as globals;
 
 class TerminalScreen extends StatefulWidget {
   final int serverId;
-
   const TerminalScreen(this.serverId, {Key key}) : super(key: key);
-
   @override
   _TerminalScreenState createState() => _TerminalScreenState();
 }
 
 class _TerminalScreenState extends State<TerminalScreen> {
   List<LogLine> lines;
-  final ScrollController _scrollController = new ScrollController();
-  final TextEditingController _textEditingController = new TextEditingController();
+  final _scrollController = new ScrollController();
+  final TextEditingController _textEditingController =
+      new TextEditingController();
+
+  bool autoScroll=true;
 
   //todo this method of frenching terminal is not very effective, but the api is not support other yet
-  Future<void> _updateConsole () async{
-    lines =  await globals.user.client.getServerLogs(widget.serverId);
-    setState(() {
-    });
+  Future<void> _updateConsole() async {
+    lines = await globals.user.client.getServerLogs(widget.serverId);
+    setState(() {});
   }
 
   void _sendCommand(String command) async {
@@ -40,22 +40,17 @@ class _TerminalScreenState extends State<TerminalScreen> {
   @override
   void initState() {
     super.initState();
-    int lastLength =0;
     //todo fix the auto scroll
-    Timer.periodic(Duration(seconds: 1), (Timer t)async {
+    Timer.periodic(Duration(seconds: 1), (Timer t) async {
       // if the page is not exist already then turn off the timer
       if (!this.mounted) {
         t.cancel();
         return;
       }
       await _updateConsole();
-      if(lines!=null&&lines.length>0&&lines.length!=lastLength) {
-        lastLength = lines.length;
-        _scrollController.animateTo(_scrollController.position.maxScrollExtent??0,
-            duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
-      }
+      if(autoScroll)
+        await _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
     });
-
   }
 
   @override
@@ -68,18 +63,49 @@ class _TerminalScreenState extends State<TerminalScreen> {
           child: Column(
             children: <Widget>[
               Expanded(
-                child: lines!=null?ListView.builder(
-                  controller: _scrollController,
-                    itemBuilder: (context,index)=>_ConsoleTile(lines[index]),
-                  itemCount: lines.length,
-                  reverse: true,
-                ):Container(),
+                child: lines != null
+                    ? Stack(
+                      children: <Widget>[
+                        ListView.builder(
+                            controller: _scrollController,
+                            itemBuilder: (context, index) =>
+                                _ConsoleTile(lines[index]),
+                            itemCount: lines.length,
+                          ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            padding: EdgeInsets.only(left: 10),
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.5),
+                              borderRadius: BorderRadius.all(Radius.circular(20))
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Text('Autoscroll',style: TextStyle(fontSize: 15),),
+                                Checkbox(
+                                  onChanged: (checked){setState(() {
+                                    autoScroll=checked;
+                                  });},
+                                  value: autoScroll,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                    : Container(),
               ),
               Container(
                 padding: EdgeInsets.all(10),
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                    color: Colors.blueGrey, borderRadius: BorderRadius.all(Radius.circular(20))),
+                    color: Colors.blueGrey,
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -96,10 +122,13 @@ class _TerminalScreenState extends State<TerminalScreen> {
                       child: Container(
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                            color: Colors.black, borderRadius: BorderRadius.all(
-                            Radius.circular(20))),
-                        child: Text("Send!", style: TextStyle(color: Colors
-                            .white, fontSize: 20),),
+                            color: Colors.black,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        child: Text(
+                          "Send!",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
                       ),
                     )
                   ],
@@ -127,12 +156,10 @@ class _ConsoleTile extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.all(5),
-      margin: EdgeInsets.only(top: 5,bottom: 5),
+      margin: EdgeInsets.only(top: 5, bottom: 5),
       decoration: BoxDecoration(
-        color: Colors.blueGrey.withOpacity(0.5),
-          borderRadius: BorderRadius.all(Radius.circular(10))
-      ),
-
+          color: Colors.blueGrey.withOpacity(0.5),
+          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

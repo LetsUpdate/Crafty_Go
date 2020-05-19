@@ -26,3 +26,9 @@ Future<void> openDialog(BuildContext context,Widget dialog, [bool isDismissible]
     },
   );
 }
+void navigateTo(BuildContext context,Widget screen){
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => screen));
+}

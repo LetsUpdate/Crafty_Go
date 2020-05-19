@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 import 'package:craftycommander/screens/players_screen.dart';
-import 'package:craftycommander/utils/dialogs.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +73,7 @@ class ServerCard extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: (){
-                      if(stat.serverRunning)
+                      if (true) //(stat.serverRunning)
                         Navigator.push(
                             context,
                             MaterialPageRoute(
