@@ -11,3 +11,7 @@ Then you can explain it in the Issues section
 ### You can know about more inforation here:
 - https://craftycontrol.com/
 - https://gitlab.com/crafty-controller
+
+## Credits
+Minecraft heads: https://minotar.net/  
+Made with Flutter: https://flutter.dev/
