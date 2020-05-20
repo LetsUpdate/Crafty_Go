@@ -3,11 +3,11 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:craftycommander/Objects/user.dart';
+import 'package:craftycommander/globals.dart' as globals;
 import 'package:craftycommander/screens/servers_screen.dart';
 import 'package:craftycommander/utils/utils.dart' as utils;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:craftycommander/globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -15,11 +15,11 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     //todo build a fancy screen
 
-    final TextEditingController urlController = new TextEditingController();
-    final TextEditingController apiKeyController = new TextEditingController();
-    if(globals.user!=null){
-      urlController.text=globals.user.client.URL;
-      apiKeyController.text=globals.user.client.API_TOKEN;
+    final TextEditingController _urlController = new TextEditingController();
+    final TextEditingController _apiKeyController = new TextEditingController();
+    if (globals.user != null) {
+      _urlController.text = globals.user.client.URL;
+      _apiKeyController.text = globals.user.client.API_TOKEN;
     }
 
     final _textStyle =
@@ -28,10 +28,10 @@ class WelcomeScreen extends StatelessWidget {
     Future<String> _validate() async {
       //todo improve the error checks...
 
-      if (urlController.text == null || apiKeyController.text == null)
+      if (_urlController.text == null || _apiKeyController.text == null)
         return "SomeFields are null";
-      final url = urlController.text;
-      final apiKey = apiKeyController.text;
+      final url = _urlController.text;
+      final apiKey = _apiKeyController.text;
       if (url.length < 1) return "The url field is empty";
       if (apiKey.length < 30 || apiKey.length > 50)
         return '(30< apiKey <50) retuns false';
@@ -45,7 +45,7 @@ class WelcomeScreen extends StatelessWidget {
       return null;
     }
 
-    void onStartClicked() async {
+    void _onStartClicked() async {
       bool isAbort = false;
       final message = await _validate();
       if (message != null) {
@@ -81,7 +81,7 @@ class WelcomeScreen extends StatelessWidget {
       }
     }
 
-    void onTestClicked() async {
+    void _onTestClicked() async {
       utils.openDialog(
           context,
           new AlertDialog(
@@ -98,87 +98,110 @@ class WelcomeScreen extends StatelessWidget {
           ));
     }
 
+    InputDecoration _inputDecoration(String hint, String label) {
+      return InputDecoration(
+        fillColor: Colors.white,
+        focusColor: Colors.white,
+        hoverColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white60,
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white,
+            width: 1.3,
+          ),
+        ),
+        hintText: hint,
+        labelText: label,
+        labelStyle: TextStyle(
+            fontSize: 25, color: Colors.white, fontStyle: FontStyle.italic),
+        hintStyle: TextStyle(color: Colors.white54),
+      );
+    }
+
+    const _buttonTextStyle = TextStyle(color: Colors.white, fontSize: 30);
+
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
-      body: Container(
+        backgroundColor: Colors.black,
+        body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage('images/welcomePageImage.jpg'),
-            fit: BoxFit.cover,
-          )),
-          child: Align(
-            alignment: Alignment.center,
+          child: SafeArea(
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(),
-                    padding: EdgeInsets.all(20),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                        child: Container(
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            border: Border.all(color: Colors.black87, width: 5),
-                          ),
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                "URL:",
-                                style: _textStyle,
-                              ),
-                              TextField(
-                                decoration: InputDecoration(
-                                    hintText: "192.168.0.1:8000"),
-                                controller: urlController,
-                              ),
-                              Divider(),
-                              Text(
-                                "API key:",
-                                style: _textStyle,
-                              ),
-                              TextField(
-                                decoration: InputDecoration(
-                                    hintText: "hfghg426trtr6w......"),
-                                controller: apiKeyController,
-                              ),
-                            ],
-                          ),
-                        ),
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset(
+                      'images/logo.png',
+                      scale: 1.4,
+                    ),
+                    Text(
+                      "Welcome to Crafty GO",
+                      style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.green,
+                          fontStyle: FontStyle.italic),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    TextField(
+                      controller: _urlController,
+                      cursorColor: Colors.white,
+                      decoration: _inputDecoration("192.168.0.2:8000", "IP"),
+                      style: TextStyle(
+                        fontSize: 21,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      RaisedButton(
-                        color: Colors.black54,
-                        onPressed: onTestClicked,
-                        child: Text(
-                          'Test',
-                          style: _textStyle,
-                        ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      controller: _apiKeyController,
+                      cursorColor: Colors.white,
+                      decoration: _inputDecoration(
+                          "q3t6zt568w347eugrwt....", "API KEY"),
+                      style: TextStyle(
+                        fontSize: 21,
+                        color: Colors.white,
                       ),
-                      RaisedButton(
-                        color: Colors.black54,
-                        onPressed: onStartClicked,
-                        child: Text(
-                          'Start',
-                          style: _textStyle,
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: _onTestClicked,
+                          color: Colors.lightBlue,
+                          child: Text(
+                            'Test',
+                            style: _buttonTextStyle,
+                          ),
                         ),
-                      )
-                    ],
-                  )
-                ],
+                        FlatButton(
+                          onPressed: _onStartClicked,
+                          color: Colors.lightBlue,
+                          child: Text(
+                            'Start',
+                            style: _buttonTextStyle,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
-          )),
-    );
+          ),
+        ));
   }
 }
