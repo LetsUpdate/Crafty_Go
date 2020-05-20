@@ -1,15 +1,16 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:craftycommander/screens/servers_screen.dart';
 import 'package:craftycommander/screens/welcome_screen.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'globals.dart'as globals;
 
 import 'Objects/user.dart';
+import 'globals.dart' as globals;
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,8 +32,11 @@ void main()async {
 
 class MyApp extends StatelessWidget {
   final bool isNew;
+  final FirebaseAnalytics analytics = FirebaseAnalytics();
 
-  const MyApp( this.isNew,{Key key}) : super(key: key);@override
+  MyApp(this.isNew, {Key key}) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -43,6 +47,9 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Flutter Demo',
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
+      ],
       theme: ThemeData(
         primaryColor: Colors.cyan,
         primarySwatch: Colors.blue,
