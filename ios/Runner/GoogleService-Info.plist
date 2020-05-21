@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>820195487570-09s232ajv92vajtaf8cq0q96fr0v8rs7.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.820195487570-09s232ajv92vajtaf8cq0q96fr0v8rs7</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA8osEcy7kgQHhNFv-XDRkGioY1fBdbSvc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>820195487570</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>hu.red.craftycommander</string>
+	<key>PROJECT_ID</key>
+	<string>crafty-commander</string>
+	<key>STORAGE_BUCKET</key>
+	<string>crafty-commander.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:820195487570:ios:28fc8ed7be7091a4aa148b</string>
+	<key>DATABASE_URL</key>
+	<string>https://crafty-commander.firebaseio.com</string>
+</dict>
+</plist>
