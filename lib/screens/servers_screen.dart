@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
 import 'package:craftycommander/cards/host_card.dart';
 import 'package:craftycommander/cards/server_card.dart';
+import 'package:craftycommander/globals.dart' as globals;
 import 'package:craftycommander/screens/server_config_screen.dart';
-import 'package:craftycommander/screens/welcome_screen.dart';
-import 'package:craftycommander/utils/utils.dart' as utils;
+import 'package:craftycommander/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:craftycommander/globals.dart'as globals;
 
 
 class ServersScreen extends StatefulWidget {
@@ -45,9 +45,8 @@ class _ServersScreenState extends State<ServersScreen> {
   }
 
   Future<void> _onSettingsClicked() async {
-    //todo build an actually settings screen
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+        context, MaterialPageRoute(builder: (context) => SettingScreen()));
   }
 
 
