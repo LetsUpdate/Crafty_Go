@@ -30,6 +30,7 @@ dependencies:
   firebase_analytics: ^5.0.11
   transparent_image: ^1.0.0
   dart_ping: ^1.0.0
+  package_info:
 
 dev_dependencies:
   flutter_test:

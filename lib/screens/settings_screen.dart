@@ -1,3 +1,4 @@
+import 'package:craftycommander/globals.dart' as globals;
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -5,7 +6,8 @@ class SettingScreen extends StatefulWidget {
   _SettingScreenState createState() => _SettingScreenState();
 }
 
-class _SettingScreenState extends State<SettingScreen> {
+class _SettingScreenState extends State<SettingScreen>
+    with WidgetsBindingObserver {
   //region ui related variables
   final _apiKeyTextController = TextEditingController();
   final _urlTextController = TextEditingController();
@@ -49,9 +51,23 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
-    certCertification = false;
+    WidgetsBinding.instance.addObserver(this);
+    _apiKeyTextController.text = globals.user.client.API_TOKEN;
+    _urlTextController.text = globals.user.client.URL;
+    certCertification = globals.user.client.checkCert;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    //log(state.toString());
   }
 
   //endregion
@@ -79,7 +95,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   TextField(
                     controller: _urlTextController,
                     cursorColor: Colors.white,
-                    decoration: _inputDecoration("192.168.0.2:8000", "IP"),
+                    decoration: _inputDecoration("192.168.0.2:8000", "IP/URL"),
                     style: _textStyle,
                   ),
                   SizedBox(
@@ -89,7 +105,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     controller: _apiKeyTextController,
                     cursorColor: Colors.white,
                     decoration:
-                        _inputDecoration("q3t6zt568w347eugrwt....", "API KEY"),
+                    _inputDecoration("q3t6zt568w347eugrwt....", "API KEY"),
                     style: _textStyle,
                   ),
                   Row(
@@ -116,8 +132,10 @@ class _SettingScreenState extends State<SettingScreen> {
               name: "Version things",
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
+                  //todo implement version checker
+                  /*Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
@@ -135,11 +153,11 @@ class _SettingScreenState extends State<SettingScreen> {
                           'Check!',
                           style: _textStyle,
                         ),
-                      )
+                      ),
                     ],
-                  ),
+                  ),*/
                   Text(
-                    'The courrnet version is: .......',
+                    'The current version is: ' + globals.appVersion,
                     style: _textStyle,
                   ),
                 ],
@@ -171,47 +189,47 @@ class _SettingSection extends StatelessWidget {
         children: <Widget>[
           name != null
               ? Padding(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white70, width: 0.2),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment(1, 0.0),
-                          // 10% of the width, so there are ten blinds.
-                          colors: [
-                            Colors.transparent,
-                            Colors.blueAccent.withOpacity(0.2)
-                          ],
-                          // whitish to gray
-                          tileMode: TileMode
-                              .repeated, // repeats the gradient over the canvas
-                        ),
-                      ),
-                      child: Text(
-                        name,
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    ),
+            padding: EdgeInsets.only(bottom: 10),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white70, width: 0.2),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment(1, 0.0),
+                    // 10% of the width, so there are ten blinds.
+                    colors: [
+                      Colors.transparent,
+                      Colors.blueAccent.withOpacity(0.2)
+                    ],
+                    // whitish to gray
+                    tileMode: TileMode
+                        .repeated, // repeats the gradient over the canvas
                   ),
-                )
+                ),
+                child: Text(
+                  name,
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ),
+          )
               : Container(),
           Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: Border.all(color: Colors.white70)
-            ),
+                border: Border.all(color: Colors.white70)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 child,
               ],
-            ),),
+            ),
+          ),
         ],
       ),
     );

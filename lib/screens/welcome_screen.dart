@@ -35,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
       if (url.length < 1) return "The url field is empty";
       if (apiKey.length < 30 || apiKey.length > 50)
         return '(30< apiKey <50) retuns false';
-      globals.user = new User(apiKey, url);
+      globals.user = new User(apiKey, url, false);
       try {
         await globals.user.updateAll();
       } catch (e) {
@@ -196,7 +196,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

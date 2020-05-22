@@ -7,6 +7,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Objects/user.dart';
@@ -17,7 +18,8 @@ void main()async {
 
   bool isNew =true;
   final prefs = await SharedPreferences.getInstance();
-
+  final packageInfo = await PackageInfo.fromPlatform();
+  globals.appVersion = packageInfo.version;
   final userJsonString = prefs.getString('user');
   //log(userJsonString);
   if(userJsonString!=null){
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.cyan,
         primarySwatch: Colors.blue,
-        fontFamily: 'Font1'
+        fontFamily: 'Font1',
       ),
       home: isNew? WelcomeScreen():ServersScreen(),
       );

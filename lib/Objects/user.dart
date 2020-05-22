@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:craftycommander/CraftyAPI/craftyAPI.dart';
-import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
 import 'package:craftycommander/CraftyAPI/static/models/McServer.dart';
+import 'package:craftycommander/CraftyAPI/static/models/hotstStat.dart';
 
 class User {
   CraftyClient client;
@@ -15,8 +15,12 @@ class User {
     return "${lastUpdated.year.toString()}-${lastUpdated.month.toString().padLeft(2,'0')}-${lastUpdated.day.toString().padLeft(2,'0')} ${lastUpdated.hour.toString().padLeft(2,'0')}:${lastUpdated.minute.toString().padLeft(2,'0')}";
   }
 
-  User(String apiKey, String url) {
-    client = new CraftyClient(apiKey, url);
+  void setClient(String apiKey, String url, bool cert) {
+    client = new CraftyClient(apiKey, url, cert);
+  }
+
+  User(String apiKey, String url, bool cert) {
+    client = new CraftyClient(apiKey, url, cert);
     updateAll().then((value) => isCached=value);
   }
 
