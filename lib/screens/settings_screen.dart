@@ -112,6 +112,39 @@ class _SettingScreenState extends State<SettingScreen> {
                 ],
               ),
             ),
+            _SettingSection(
+              name: "Version things",
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        "Check for updates: ",
+                        style: _textStyle,
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      RaisedButton(
+                        color: Colors.blueAccent.withOpacity(0.5),
+                        splashColor: Colors.white70,
+                        onPressed: () {},
+                        child: Text(
+                          'Check!',
+                          style: _textStyle,
+                        ),
+                      )
+                    ],
+                  ),
+                  Text(
+                    'The courrnet version is: .......',
+                    style: _textStyle,
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -141,14 +174,44 @@ class _SettingSection extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: 10),
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      name,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white70, width: 0.2),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment(1, 0.0),
+                          // 10% of the width, so there are ten blinds.
+                          colors: [
+                            Colors.transparent,
+                            Colors.blueAccent.withOpacity(0.2)
+                          ],
+                          // whitish to gray
+                          tileMode: TileMode
+                              .repeated, // repeats the gradient over the canvas
+                        ),
+                      ),
+                      child: Text(
+                        name,
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
                     ),
                   ),
                 )
               : Container(),
-          child,
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                border: Border.all(color: Colors.white70)
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                child,
+              ],
+            ),),
         ],
       ),
     );

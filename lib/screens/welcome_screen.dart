@@ -126,82 +126,83 @@ class WelcomeScreen extends StatelessWidget {
     const _buttonTextStyle = TextStyle(color: Colors.white, fontSize: 30);
 
     return Scaffold(
-        backgroundColor: Colors.black,
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset(
-                      'images/logo.png',
-                      scale: 1.4,
+      backgroundColor: Colors.black,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(
+                    'images/logo.png',
+                    scale: 1.4,
+                  ),
+                  Text(
+                    "Welcome to Crafty GO",
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.green,
+                        fontStyle: FontStyle.italic),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextField(
+                    controller: _urlController,
+                    cursorColor: Colors.white,
+                    decoration: _inputDecoration("192.168.0.2:8000", "IP"),
+                    style: TextStyle(
+                      fontSize: 21,
+                      color: Colors.white,
                     ),
-                    Text(
-                      "Welcome to Crafty GO",
-                      style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.green,
-                          fontStyle: FontStyle.italic),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: _apiKeyController,
+                    cursorColor: Colors.white,
+                    decoration:
+                        _inputDecoration("q3t6zt568w347eugrwt....", "API KEY"),
+                    style: TextStyle(
+                      fontSize: 21,
+                      color: Colors.white,
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextField(
-                      controller: _urlController,
-                      cursorColor: Colors.white,
-                      decoration: _inputDecoration("192.168.0.2:8000", "IP"),
-                      style: TextStyle(
-                        fontSize: 21,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextField(
-                      controller: _apiKeyController,
-                      cursorColor: Colors.white,
-                      decoration: _inputDecoration(
-                          "q3t6zt568w347eugrwt....", "API KEY"),
-                      style: TextStyle(
-                        fontSize: 21,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        FlatButton(
-                          onPressed: _onTestClicked,
-                          color: Colors.lightBlue,
-                          child: Text(
-                            'Test',
-                            style: _buttonTextStyle,
-                          ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      FlatButton(
+                        onPressed: _onTestClicked,
+                        color: Colors.lightBlue,
+                        child: Text(
+                          'Test',
+                          style: _buttonTextStyle,
                         ),
-                        FlatButton(
-                          onPressed: _onStartClicked,
-                          color: Colors.lightBlue,
-                          child: Text(
-                            'Start',
-                            style: _buttonTextStyle,
-                          ),
+                      ),
+                      FlatButton(
+                        onPressed: _onStartClicked,
+                        color: Colors.lightBlue,
+                        child: Text(
+                          'Start',
+                          style: _buttonTextStyle,
                         ),
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
