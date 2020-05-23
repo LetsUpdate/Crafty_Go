@@ -8,11 +8,16 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen>
     with WidgetsBindingObserver {
+  void _saveSettings() {
+    globals.user.setClient(
+        _apiKeyTextController.text, _urlTextController.text, certCertification);
+    globals.saveAll();
+  }
+
   //region ui related variables
   final _apiKeyTextController = TextEditingController();
   final _urlTextController = TextEditingController();
   bool certCertification;
-
   //endregion
 
   //region style things
@@ -24,7 +29,6 @@ class _SettingScreenState extends State<SettingScreen>
     color: _textStyle.color,
     fontSize: 40,
   );
-
   InputDecoration _inputDecoration(String hint, String label) {
     return InputDecoration(
       fillColor: Colors.white,
@@ -49,10 +53,12 @@ class _SettingScreenState extends State<SettingScreen>
       hintStyle: TextStyle(color: Colors.white54),
     );
   }
-
+  //endregion
+  //region screen state things
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _saveSettings();
     super.dispose();
   }
 
@@ -67,7 +73,9 @@ class _SettingScreenState extends State<SettingScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    //log(state.toString());
+    if (state == AppLifecycleState.paused) {
+      _saveSettings();
+    }
   }
 
   //endregion
