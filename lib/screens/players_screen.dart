@@ -24,7 +24,11 @@ class _PlayersScreenState extends State<PlayersScreen> {
   //the form of the players string: "['test', 'Protocoll']"
   @override
   void initState() {
-    players = globals.user.getServersStatById(widget.serverId).getPlayerList();
+    players = [
+      'fake1',
+      'fake2',
+      'fake3'
+    ]; //globals.user.getServersStatById(widget.serverId).getPlayerList();
     _playerManager = new PlayerManager(widget.serverId, globals.user.client);
     super.initState();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
@@ -38,7 +42,11 @@ class _PlayersScreenState extends State<PlayersScreen> {
 
   void _updatePlayers() async {
     await globals.user.updateServerStats();
-    players = globals.user.getServersStatById(widget.serverId).getPlayerList();
+    players = [
+      'fake1',
+      'fake2',
+      'fake3'
+    ]; //htop globals.user.getServersStatById(widget.serverId).getPlayerList();
     setState(() {
       selecting = !selecting;
     });
@@ -51,7 +59,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
         height: 100,
       );
     return GestureDetector(
-        onTap: () => utils.openDialog(context, _PlayerDialog(players[index],_playerManager)),
+        onTap: () => utils.openDialog(context, _openDialog(players[index])),
         child: _PlayerListItem(players[index]));
   }
 
@@ -75,6 +83,86 @@ class _PlayersScreenState extends State<PlayersScreen> {
         ),
       ),
     );
+  }
+
+  _runAction(PlayerActions playerAction, String playerName) async {
+    final isError =
+        await _playerManager.runPlayerAction(playerAction, playerName);
+    _response(isError);
+  }
+
+  void _response(bool isError) {
+    if (isError) {
+      utils.msgToUser("Send failed", isError);
+    } else {
+      utils.msgToUser("Sent!", isError);
+    }
+  }
+
+  _openDialog(String player) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Wrap(
+            alignment: WrapAlignment.center,
+            children: <Widget>[
+              SettingButton(
+                iconData: Icons.offline_bolt,
+                text: 'OP',
+                color: Colors.blue,
+                size: 18,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              SettingButton(
+                iconData: Icons.remove_circle_outline,
+                text: 'DE-OP',
+                color: Colors.blue,
+                size: 18,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              SettingButton(
+                iconData: Icons.close,
+                text: "kick",
+                color: Colors.yellow,
+                size: 18,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              SettingButton(
+                iconData: Icons.warning,
+                text: "Kill",
+                color: Colors.red,
+                size: 18,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              SettingButton(
+                iconData: Icons.delete,
+                text: "ban",
+                color: Colors.red,
+                iconColor: Colors.black,
+                size: 18,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              SettingButton(
+                iconData: Icons.details,
+                text: "Close",
+                color: Colors.white,
+                iconColor: Colors.black,
+                size: 18,
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        });
   }
 }
 
@@ -119,132 +207,6 @@ class __PlayerListItemState extends State<_PlayerListItem> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _PlayerDialog extends StatelessWidget {
-  final String playerName;
-  final PlayerManager playerManager;
-
-  const _PlayerDialog(
-    this.playerName,
-      this.playerManager,{
-    Key key,
-  }) : super(key: key);
-
-  void _onOP(BuildContext context) async {
-    final isError =
-        await playerManager.runPlayerAction(PlayerActions.op, playerName);
-    _response(context, isError);
-  }
-
-  void _onDEOP(BuildContext context) async {
-    final isError =
-        await playerManager.runPlayerAction(PlayerActions.deOp, playerName);
-    _response(context, isError);
-  }
-
-  void _onKILL(BuildContext context) async {
-    final isError =
-        await playerManager.runPlayerAction(PlayerActions.kill, playerName);
-    _response(context, isError);
-  }
-
-  void _onKICK(BuildContext context) async {
-    final isError =
-        await playerManager.runPlayerAction(PlayerActions.kick, playerName);
-    _response(context, isError);
-  }
-
-  void _onBAN(BuildContext context) async {
-    final isError =
-        await playerManager.runPlayerAction(PlayerActions.ban, playerName);
-    _response(context, isError);
-  }
-
-  void _response(BuildContext context, bool isError) {
-    Navigator.pop(context);
-    if(isError){
-      utils.msgToUser("Send failed", isError);
-    }
-    else{
-      utils.msgToUser("Sent!", isError);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SimpleDialog(
-      backgroundColor: Colors.orangeAccent.withOpacity(0.8),
-      title: Text("What do you want with: $playerName"),
-      children: <Widget>[
-        Wrap(
-          alignment: WrapAlignment.center,
-          children: <Widget>[
-            SettingButton(
-              iconData: Icons.offline_bolt,
-              text: 'OP',
-              color: Colors.blue,
-              size: 18,
-              onTap: () => _onOP(context),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            SettingButton(
-              iconData: Icons.remove_circle_outline,
-              text: 'DE-OP',
-              color: Colors.blue,
-              size: 18,
-              onTap: () => _onDEOP(context),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            SettingButton(
-              iconData: Icons.close,
-              text: "kick",
-              color: Colors.yellow,
-              size: 18,
-              onTap: () => _onKICK(context),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            SettingButton(
-              iconData: Icons.warning,
-              text: "Kill",
-              color: Colors.red,
-              size: 18,
-              onTap: () => _onKILL(context),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            SettingButton(
-              iconData: Icons.delete,
-              text: "ban",
-              color: Colors.red,
-              iconColor: Colors.black,
-              onTap: () => _onBAN(context),
-              size: 18,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            SettingButton(
-              iconData: Icons.details,
-              text: "Close",
-              color: Colors.white,
-              iconColor: Colors.black,
-              size: 18,
-              onTap: ()=> Navigator.pop(context),
-            ),
-          ],
-        )
-      ],
-
     );
   }
 }
