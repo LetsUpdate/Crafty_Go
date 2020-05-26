@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 //Report the user an error or sucess
 //todo somhow build this with SlackBar
-void msgToUser(String msg, [bool isError]) {
+void msgToUser(String msg, bool isError) {
   if (isError == null) isError = false;
   Fluttertoast.showToast(
       msg: msg,
