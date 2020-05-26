@@ -18,7 +18,6 @@ class PlayersScreen extends StatefulWidget {
 
 class _PlayersScreenState extends State<PlayersScreen> {
   PlayerManager _playerManager;
-  bool selecting = false;
   List<String> players;
   final _refreshController = new RefreshController();
   //the form of the players string: "['test', 'Protocoll']"
@@ -46,10 +45,8 @@ class _PlayersScreenState extends State<PlayersScreen> {
       'fake1',
       'fake2',
       'fake3'
-    ]; //htop globals.user.getServersStatById(widget.serverId).getPlayerList();
-    setState(() {
-      selecting = !selecting;
-    });
+    ]; // globals.user.getServersStatById(widget.serverId).getPlayerList();
+    setState(() {});
     _refreshController.refreshCompleted();
   }
 
@@ -59,7 +56,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
         height: 100,
       );
     return GestureDetector(
-        onTap: () => utils.openDialog(context, _openDialog(players[index])),
+        onTap: () => _openDialog(players[index]),
         child: _PlayerListItem(players[index]));
   }
 
@@ -78,7 +75,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
           onRefresh: _updatePlayers,
           child: ListView.builder(
             itemBuilder: _builder,
-            itemCount: selecting ? players.length + 1 : players.length,
+            itemCount: players.length,
           ),
         ),
       ),
@@ -86,22 +83,19 @@ class _PlayersScreenState extends State<PlayersScreen> {
   }
 
   _runAction(PlayerActions playerAction, String playerName) async {
-    final isError =
-        await _playerManager.runPlayerAction(playerAction, playerName);
-    _response(isError);
-  }
-
-  void _response(bool isError) {
-    if (isError) {
-      utils.msgToUser("Send failed", isError);
-    } else {
-      utils.msgToUser("Sent!", isError);
-    }
+    if (await _playerManager.runPlayerAction(playerAction, playerName))
+      utils.msgToUser("Send failed", true);
+    else
+      utils.msgToUser("Sent!");
   }
 
   _openDialog(String player) {
     showModalBottomSheet(
         context: context,
+        backgroundColor: Colors.lightBlueAccent.withOpacity(0.5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         builder: (context) {
           return Wrap(
             alignment: WrapAlignment.center,
@@ -111,6 +105,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 text: 'OP',
                 color: Colors.blue,
                 size: 18,
+                onTap: _runAction(PlayerActions.op, player),
               ),
               SizedBox(
                 width: 10,
@@ -120,6 +115,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 text: 'DE-OP',
                 color: Colors.blue,
                 size: 18,
+                onTap: _runAction(PlayerActions.deOp, player),
               ),
               SizedBox(
                 width: 10,
@@ -129,6 +125,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 text: "kick",
                 color: Colors.yellow,
                 size: 18,
+                onTap: _runAction(PlayerActions.kick, player),
               ),
               SizedBox(
                 width: 10,
@@ -138,6 +135,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 text: "Kill",
                 color: Colors.red,
                 size: 18,
+                onTap: _runAction(PlayerActions.kill, player),
               ),
               SizedBox(
                 width: 10,
@@ -148,6 +146,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 color: Colors.red,
                 iconColor: Colors.black,
                 size: 18,
+                onTap: _runAction(PlayerActions.ban, player),
               ),
               SizedBox(
                 width: 10,
@@ -166,17 +165,10 @@ class _PlayersScreenState extends State<PlayersScreen> {
   }
 }
 
-class _PlayerListItem extends StatefulWidget {
+class _PlayerListItem extends StatelessWidget {
   final String playerName;
 
   const _PlayerListItem(this.playerName, {Key key}) : super(key: key);
-
-  @override
-  __PlayerListItemState createState() => __PlayerListItemState();
-}
-
-class __PlayerListItemState extends State<_PlayerListItem> {
-  bool opened = false;
 
   @override
   Widget build(BuildContext context) {
@@ -192,14 +184,14 @@ class __PlayerListItemState extends State<_PlayerListItem> {
         children: <Widget>[
           Expanded(
             child: Text(
-              widget.playerName,
+              playerName,
               style: TextStyle(fontSize: 30, color: Colors.white),
             ),
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: FadeInImage.assetNetwork(
-              image: "https://minotar.net/avatar/${widget.playerName}/50.png",
+              image: "https://minotar.net/avatar/$playerName/50.png",
               fadeInCurve: Curves.linear,
               width: 50,
               placeholder: 'images/steve.png',
