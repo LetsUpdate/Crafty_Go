@@ -98,6 +98,27 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
             builder: (context) => TerminalScreen(stat.serverId)));
   }
 
+  void _openMoreButtons() {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.black.withOpacity(0.7),
+        builder: (context) {
+          return Column(
+            children: <Widget>[
+              Wrap(
+                children: <Widget>[
+                  SettingButton(
+                    text: "backUp",
+                    iconData: Icons.backup,
+                    color: Colors.green,
+                  ),
+                ],
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -159,14 +180,22 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                             text: "Stop",
                             color: Colors.red,
                             enabled: stat.serverRunning,
-                            onTap: ()=>_actionHandler('stop'),
+                            onTap: () async {
+                              if (await utils.showQuestionDialog(context,
+                                  "Do you want to stop the server?")) _actionHandler(
+                                  'stop');
+                            },
                           ),
                           SettingButton(
                             iconData: Icons.sync,
                             text: "Restart",
                             color: Colors.blue,
                             enabled: stat.serverRunning,
-                            onTap: ()=>_actionHandler('restart'),
+                            onTap: () async {
+                              if (await utils.showQuestionDialog(context,
+                                  "Do you want to restart the server?")) _actionHandler(
+                                  'restart');
+                            },
                           ),
                           SettingButton(
                             iconData: Icons.people,
@@ -181,6 +210,13 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                             iconColor: Colors.white,
                             onTap: _openTerminal,
                           ),
+                          //todo if new functions are available in teh api
+                          /*SettingButton(
+                            iconData: Icons.warning,
+                            text: "More",
+                            color: Colors.red,
+                            onTap: _openMoreButtons,
+                          )*/
                         ],
                       )
                     ],

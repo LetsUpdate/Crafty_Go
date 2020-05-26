@@ -23,11 +23,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
   //the form of the players string: "['test', 'Protocoll']"
   @override
   void initState() {
-    players = [
-      'fake1',
-      'fake2',
-      'fake3'
-    ]; //globals.user.getServersStatById(widget.serverId).getPlayerList();
+    players = globals.user.getServersStatById(widget.serverId).getPlayerList();
     _playerManager = new PlayerManager(widget.serverId, globals.user.client);
     super.initState();
     Timer.periodic(Duration(seconds: 10), (Timer t) {
