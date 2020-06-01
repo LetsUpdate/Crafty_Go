@@ -51,7 +51,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
         height: 100,
       );
     return GestureDetector(
-        onTap: () => utils.openDialog(context, _openDialog(players[index])),
+        onTap: () => _openDialog(players[index]),
         child: _PlayerListItem(players[index]));
   }
 
@@ -103,6 +103,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 text: 'OP',
                 color: Colors.blue,
                 size: 18,
+                onTap: () => _runAction(PlayerActions.op, player),
               ),
               SizedBox(
                 width: 10,
@@ -112,6 +113,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 text: 'DE-OP',
                 color: Colors.blue,
                 size: 18,
+                onTap: () => _runAction(PlayerActions.deOp, player),
               ),
               SizedBox(
                 width: 10,
@@ -121,6 +123,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 text: "kick",
                 color: Colors.yellow,
                 size: 18,
+                onTap: () => _runAction(PlayerActions.kick, player),
               ),
               SizedBox(
                 width: 10,
@@ -130,6 +133,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 text: "Kill",
                 color: Colors.red,
                 size: 18,
+                onTap: () => _runAction(PlayerActions.kill, player),
               ),
               SizedBox(
                 width: 10,
@@ -140,6 +144,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 color: Colors.red,
                 iconColor: Colors.black,
                 size: 18,
+                onTap: () => _runAction(PlayerActions.ban, player),
               ),
               SizedBox(
                 width: 10,

@@ -26,7 +26,7 @@ class ServerCard extends StatelessWidget {
     "Started at: ${stat.serverStartTime}",
     "World size: ${stat.worldSize}",
     "Sever type: ${stat.serverVersion}",
-    "Description: ${stat.motd}"
+    "Description: \n\t${stat.motd}"
     ];
     List<Widget> _infoList = new List();
     for (var x in _infoBoard ?? []) {
