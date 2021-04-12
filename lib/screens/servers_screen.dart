@@ -11,7 +11,6 @@ import 'package:craftycommander/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-
 class ServersScreen extends StatefulWidget {
   @override
   _ServersScreenState createState() => _ServersScreenState();
@@ -39,7 +38,7 @@ class _ServersScreenState extends State<ServersScreen> {
     });
   }
 
-  void initAsync()async{
+  void initAsync() async {
     await _initImages();
     _updateServer();
   }
@@ -49,16 +48,15 @@ class _ServersScreenState extends State<ServersScreen> {
         context, MaterialPageRoute(builder: (context) => SettingScreen()));
   }
 
-
   Future<void> _updateServer() async {
     if (globals.user == null) {
       _refreshController.refreshFailed();
       return;
     }
-    if(await globals.user.updateAll()) {
+    if (await globals.user.updateAll()) {
       log("Error during the update");
       _refreshController.refreshFailed();
-    }else{
+    } else {
       _refreshController.refreshCompleted();
     }
     setState(() {});
@@ -69,20 +67,20 @@ class _ServersScreenState extends State<ServersScreen> {
 
   Future _initImages() async {
     final manifestContent =
-    await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+        await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
 
     final imagePaths = manifestMap.keys
         .where((String key) => key.contains('images/ServerCardImgs/'))
         .toList();
-      someImages = imagePaths;
+    someImages = imagePaths;
   }
 
   Widget serverCardBuilder(BuildContext context, int index) {
     McServer stat = globals.user.serverStats[index];
     int i;
     if (index > someImages.length) {
-      i = someImages.length;
+      i = someImages.length - 1;
     } else {
       i = index;
     }
@@ -98,7 +96,7 @@ class _ServersScreenState extends State<ServersScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ServerConfigScreen(provider,stat.serverId)));
+            builder: (context) => ServerConfigScreen(provider, stat.serverId)));
   }
 
   @override
@@ -107,7 +105,7 @@ class _ServersScreenState extends State<ServersScreen> {
       body: SafeArea(
         child: SmartRefresher(
             controller: _refreshController,
-            onRefresh:_updateServer,
+            onRefresh: _updateServer,
             header: WaterDropMaterialHeader(distance: 35),
             child: CustomScrollView(
               slivers: <Widget>[
@@ -116,25 +114,27 @@ class _ServersScreenState extends State<ServersScreen> {
                   backgroundColor: Colors.transparent,
                   flexibleSpace: FlexibleSpaceBar(
                       background: Container(
-                        height: 150,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.cyan, width: 4),
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                bottomRight: Radius.circular(30)),
-                            image: DecorationImage(
-                                image: AssetImage("images/clouds.jpg"),
-                                fit: BoxFit.cover)),
-                        child: Center(
-                            child: HostStatCard(
-                              stat: globals.user.hostStats,
-                              onTapSettings: _onSettingsClicked,
-                            )),
-                      )),
+                    height: 150,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.cyan, width: 4),
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30)),
+                        image: DecorationImage(
+                            image: AssetImage("images/clouds.jpg"),
+                            fit: BoxFit.cover)),
+                    child: Center(
+                        child: HostStatCard(
+                      stat: globals.user.hostStats,
+                      onTapSettings: _onSettingsClicked,
+                    )),
+                  )),
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(serverCardBuilder,
-                      childCount:someImages!=null? globals.user.serverStats.length:0),
+                      childCount: someImages != null
+                          ? globals.user.serverStats.length
+                          : 0),
                 )
               ],
             )),

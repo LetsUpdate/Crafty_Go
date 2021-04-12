@@ -20,12 +20,17 @@ class _TerminalScreenState extends State<TerminalScreen> {
   final TextEditingController _textEditingController =
       new TextEditingController();
 
-  bool autoScroll=true;
+  bool autoScroll = true;
 
   //todo this method of frenching terminal is not very effective, but the api is not support other yet
   Future<void> _updateConsole() async {
-    lines = await globals.user.client.getServerLogs(widget.serverId);
-    setState(() {});
+    lines = (await globals.user.client.getServerLogs(widget.serverId))
+        .reversed
+        .toList();
+    setState(() {
+      _scrollController.animateTo(0,
+          duration: Duration(seconds: 2), curve: Curves.fastOutSlowIn);
+    });
   }
 
   void _sendCommand(String command) async {
@@ -41,16 +46,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
   void initState() {
     super.initState();
     //todo fix the auto scroll
-    Timer.periodic(Duration(seconds: 1), (Timer t) async {
-      // if the page is not exist already then turn off the timer
-      if (!this.mounted) {
-        t.cancel();
-        return;
-      }
-      await _updateConsole();
-      if(autoScroll)
-        await _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
-    });
+    _updateConsole();
   }
 
   @override
@@ -63,42 +59,63 @@ class _TerminalScreenState extends State<TerminalScreen> {
           child: Column(
             children: <Widget>[
               Expanded(
-                child: lines != null
-                    ? Stack(
-                      children: <Widget>[
-                        ListView.builder(
+                child: Stack(
+                  children: <Widget>[
+                    lines != null
+                        ? ListView.builder(
                             controller: _scrollController,
                             itemBuilder: (context, index) =>
                                 _ConsoleTile(lines[index]),
                             itemCount: lines.length,
-                          ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 10),
-                            margin: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.5),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
+                            reverse: true,
+                            shrinkWrap: true,
+                          )
+                        : Container(),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10),
+                        margin: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.5),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text(
+                              'Autoscroll',
+                              style: TextStyle(fontSize: 15),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Text('Autoscroll',style: TextStyle(fontSize: 15),),
-                                Checkbox(
-                                  onChanged: (checked){setState(() {
-                                    autoScroll=checked;
-                                  });},
-                                  value: autoScroll,
-                                ),
-                              ],
+                            Checkbox(
+                              onChanged: (checked) {
+                                setState(() {
+                                  autoScroll = checked;
+                                });
+                              },
+                              value: autoScroll,
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.white30),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.sync,
+                            color: Colors.white,
+                          ),
+                          onPressed: _updateConsole,
+                        ),
+                      ),
                     )
-                    : Container(),
+                  ],
+                ),
               ),
               Container(
                 padding: EdgeInsets.all(10),

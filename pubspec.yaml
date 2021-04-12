@@ -22,14 +22,14 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
-  http: ^0.12.0+4
-  pull_to_refresh: ^1.5.7
-  shared_preferences: ^0.5.7
-  fluttertoast: ^4.0.0
-  firebase_analytics: ^5.0.11
-  transparent_image: ^1.0.0
-  dart_ping: ^1.0.0
+  cupertino_icons:
+  http: 
+  pull_to_refresh: 
+  shared_preferences: 
+  fluttertoast: 
+  firebase_analytics: 
+  transparent_image: 
+  dart_ping: 
   package_info:
 
 dev_dependencies:
