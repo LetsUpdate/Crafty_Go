@@ -79,7 +79,7 @@ class _ServersScreenState extends State<ServersScreen> {
   Widget serverCardBuilder(BuildContext context, int index) {
     McServer stat = globals.user.serverStats[index];
     int i;
-    if (index > someImages.length) {
+    if (index >= someImages.length) {
       i = someImages.length - 1;
     } else {
       i = index;
